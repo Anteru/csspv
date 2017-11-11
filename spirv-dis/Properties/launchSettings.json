@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "spirv-dis": {
+      "commandName": "Project",
+      "commandLineArgs": "vs.spv"
+    }
+  }
+}

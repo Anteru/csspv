@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2006
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpirV.Core", "SPIRV\SpirV.Core.csproj", "{B498C064-1566-4123-A828-BE35FBCF5F2C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "spirv-dis", "spirv-dis\spirv-dis.csproj", "{F37E5152-3746-4E09-8E26-FE96EEA03DF0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B498C064-1566-4123-A828-BE35FBCF5F2C} = {B498C064-1566-4123-A828-BE35FBCF5F2C}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "spirv-gen", "spirv-gen\spirv-gen.csproj", "{400E239D-F4FD-4557-AD5E-15B34F81898D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B498C064-1566-4123-A828-BE35FBCF5F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B498C064-1566-4123-A828-BE35FBCF5F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B498C064-1566-4123-A828-BE35FBCF5F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B498C064-1566-4123-A828-BE35FBCF5F2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F37E5152-3746-4E09-8E26-FE96EEA03DF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37E5152-3746-4E09-8E26-FE96EEA03DF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F37E5152-3746-4E09-8E26-FE96EEA03DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F37E5152-3746-4E09-8E26-FE96EEA03DF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400E239D-F4FD-4557-AD5E-15B34F81898D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400E239D-F4FD-4557-AD5E-15B34F81898D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400E239D-F4FD-4557-AD5E-15B34F81898D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400E239D-F4FD-4557-AD5E-15B34F81898D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A0B2238F-4799-4349-9DF9-633CCC35811E}
+	EndGlobalSection
+EndGlobal
