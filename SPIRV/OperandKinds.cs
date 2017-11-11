@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SpirV.Core
+namespace SpirV
 {
 	public class OperandKind
 	{

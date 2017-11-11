@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Formatting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,41 +13,6 @@ namespace SpvGen
 	{
 		Value,
 		Bit
-	}
-
-	class SpirvEnum
-	{
-		public SpirvEnum (string name, SpirvEnumType type,
-			IDictionary<string, int> values)
-		{
-			Name = name;
-			Type = type;
-			Values = values;
-		}
-
-		public SyntaxNode ToSourceFragment (SyntaxGenerator generator)
-		{
-			List<SyntaxNode> enumMembers = new List<SyntaxNode> ();
-
-			var sortedValues = new SortedDictionary<string, int> (Values);
-			foreach (var kv in sortedValues) {
-				enumMembers.Add (generator.EnumMember (kv.Key,
-					generator.LiteralExpression (kv.Value)));
-			}
-
-			var e = generator.EnumDeclaration (Name,
-				members: enumMembers);
-
-			if (Type == SpirvEnumType.Bit) {
-				e = generator.AddAttributes (e, generator.Attribute ("Flags"));
-			}
-
-			return e;
-		}
-
-		public string Name { get; }
-		public SpirvEnumType Type { get; }
-		public IDictionary<string, int> Values { get; }
 	}
 
 	class SpirvMeta
@@ -163,11 +129,9 @@ namespace SpvGen
 			var workspace = new AdhocWorkspace ();
 			var generator = SyntaxGenerator.GetGenerator (workspace,
 				LanguageNames.CSharp);
-
-			var usingDeclaration = generator.NamespaceImportDeclaration ("System");
-
-			ProcessSpirv (generator, usingDeclaration);
-			ProcessGrammars (generator, usingDeclaration);
+			
+			ProcessSpirv (generator, workspace);
+			ProcessGrammars (generator, workspace);
 		}
 
 		class OperandItem
@@ -184,7 +148,7 @@ namespace SpvGen
 			public IList<OperandItem> Operands;
 		}
 
-	private static void ProcessInstructions (Newtonsoft.Json.Linq.JToken instructions,
+		private static void ProcessInstructions (Newtonsoft.Json.Linq.JToken instructions,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
 			var ins = new List<InstructionItem> ();
@@ -392,8 +356,9 @@ namespace SpvGen
 			}
 		}
 
-		private static void ProcessGrammars (SyntaxGenerator generator,
-			SyntaxNode usingDeclaration)
+		private static void ProcessGrammars (
+			SyntaxGenerator generator,
+			Workspace workspace)
 		{
 			var doc = Newtonsoft.Json.Linq.JObject.ReadFrom (
 				new Newtonsoft.Json.JsonTextReader (System.IO.File.OpenText (
@@ -403,21 +368,16 @@ namespace SpvGen
 
 			ProcessInstructions (doc ["instructions"], generator, nodes);
 			ProcessOperandKinds (doc ["operand_kinds"], generator, nodes);
-			
-			var namespaceDeclaration = generator.NamespaceDeclaration ("SpirV.Core",
-				nodes);
+						
+			var cu = generator.CompilationUnit (
+				generator.NamespaceImportDeclaration ("System"),
+				generator.NamespaceImportDeclaration ("System.Collections.Generic"),
+				generator.NamespaceDeclaration ("SpirV", nodes));
 
-			var usingGenericCollectionDeclaration = 
-				generator.NamespaceImportDeclaration ("System.Collections.Generic");
-
-			var cu = generator.CompilationUnit (usingDeclaration, 
-				usingGenericCollectionDeclaration, namespaceDeclaration).
-				NormalizeWhitespace ();
-
-			System.IO.File.WriteAllText ("spirv.core.cs", cu.ToFullString ());
+			GenerateCode (cu, workspace, "../SPIRV/SpirV.Core.Grammar.cs");
 		}
 
-		private static void ProcessSpirv (SyntaxGenerator generator, SyntaxNode usingDeclaration)
+		private static void ProcessSpirv (SyntaxGenerator generator, Workspace workspace)
 		{
 			var doc = Newtonsoft.Json.Linq.JObject.ReadFrom (
 				new Newtonsoft.Json.JsonTextReader (System.IO.File.OpenText (
@@ -429,19 +389,22 @@ namespace SpvGen
 			var nodes = new List<SyntaxNode> ();
 
 			CreateSpirvMeta (doc, xmlDoc, generator, nodes);
-			CreateSpirvEnumerations (doc, generator, nodes);
 
-			var namespaceDeclaration = generator.NamespaceDeclaration ("SpirV",
-				nodes);
-			var usingGenericCollectionDeclaration =
-				generator.NamespaceImportDeclaration ("System.Collections.Generic");
+			var cu = generator.CompilationUnit (
+				generator.NamespaceImportDeclaration ("System"),
+				generator.NamespaceImportDeclaration ("System.Collections.Generic"),
+				generator.NamespaceDeclaration ("SpirV", nodes));
 
-			var cu = generator.CompilationUnit (usingDeclaration,
-				usingGenericCollectionDeclaration,
-				namespaceDeclaration).
-				NormalizeWhitespace ();
+			GenerateCode (cu, workspace, "../SPIRV/SpirV.Meta.cs");
+		}
 
-			System.IO.File.WriteAllText ("spirv.cs", cu.ToFullString ());
+		private static void GenerateCode (SyntaxNode node, Workspace workspace,
+			string path)
+		{
+			node = Formatter.Format (node, workspace);
+
+			System.IO.File.WriteAllText (path,
+				node.ToFullString ());
 		}
 
 		private static void CreateSpirvMeta (Newtonsoft.Json.Linq.JToken jr, 
@@ -450,21 +413,6 @@ namespace SpvGen
 			var meta = new SpirvMeta (jr ["spv"] ["meta"], doc.SelectSingleNode ("/registry/ids") as XmlElement);
 
 			nodes.Add (meta.ToSourceFragment (generator));
-		}
-
-		private static void CreateSpirvEnumerations (Newtonsoft.Json.Linq.JToken jr, 
-			SyntaxGenerator generator, IList<SyntaxNode> nodes)
-		{
-			foreach (var e in jr ["spv"] ["enum"]) {
-				var name = e.Value<string> ("Name");
-				var type = e.Value<string> ("Type") == "Value" ?
-					SpirvEnumType.Value : SpirvEnumType.Bit;
-
-				var values = e ["Values"].ToObject<Dictionary<string, int>> ();
-
-				var se = new SpirvEnum (name, type, values);
-				nodes.Add (se.ToSourceFragment (generator));
-			}
 		}
 	}
 }

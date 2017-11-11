@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpirV.Core", "SPIRV\SpirV.Core.csproj", "{B498C064-1566-4123-A828-BE35FBCF5F2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpirV", "SPIRV\SpirV.csproj", "{B498C064-1566-4123-A828-BE35FBCF5F2C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "spirv-dis", "spirv-dis\spirv-dis.csproj", "{F37E5152-3746-4E09-8E26-FE96EEA03DF0}"
 	ProjectSection(ProjectDependencies) = postProject

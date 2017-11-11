@@ -6,16 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="spirv.cs" />
-    <Compile Remove="spirv.core.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="spirv.cs" />
-    <None Include="spirv.core.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="2.4.0" />

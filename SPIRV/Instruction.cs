@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpirV.Core
+namespace SpirV
 {
 	public enum OperandQuantifier
 	{
