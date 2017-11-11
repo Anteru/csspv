@@ -31,15 +31,15 @@ namespace SpirV
 	public class Instruction
     {
 		public string Name { get; }
+
 		public IList<Operand> Operands
 		{
 			get;
 		}
 
 		public Instruction (string name)
+			: this (name, new List<Operand> ())
 		{
-			Operands = new List<Operand> ();
-			Name = name;
 		}
 
 		public Instruction (string name, IList<Operand> operands)

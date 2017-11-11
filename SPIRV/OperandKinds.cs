@@ -44,6 +44,9 @@ namespace SpirV
 	public abstract class EnumOperandKind : OperandKind
 	{
 		public virtual Parameter CreateParameter (uint value) => null;
+		public virtual bool IsBitEnumeration { get; }
+		public virtual IEnumerable<uint> EnumerationValues { get; }
+		public virtual string GetValueName (uint value) => null;
 	}
 
 	public class IdScope : OperandKind

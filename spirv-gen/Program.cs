@@ -198,25 +198,16 @@ namespace SpvGen
 			}
 
 			var sb = new StringBuilder ();
+
+			foreach (var instruction in ins) {
+				CreateInstructionClass (sb, instruction);
+			}
+
 			sb.AppendLine ("public static class Instructions {");
 			sb.Append ("private static Dictionary<int, Instruction> instructions_ = new Dictionary<int, Instruction> {");
 
 			foreach (var instruction in ins) {
-				if (instruction.Operands == null) {
-					sb.AppendLine ($"{{ {instruction.Id}, new Instruction (\"{instruction.Name}\") }},");
-				} else {
-					sb.AppendLine ($"{{ {instruction.Id}, new Instruction (\"{instruction.Name}\", new List<Operand> () {{");
-
-					foreach (var operand in instruction.Operands) {
-						if (operand.Name == null) {
-							sb.AppendLine ($"new Operand (new {operand.Kind} (), null, OperandQuantifier.{operand.Quantifier}),");
-						} else {
-							sb.AppendLine ($"new Operand (new {operand.Kind} (), \"{operand.Name}\", OperandQuantifier.{operand.Quantifier}),");
-						}
-					}
-
-					sb.AppendLine ("} )},");
-				}
+					sb.AppendLine ($"{{ {instruction.Id}, new {instruction.Name}() }},");
 			}
 
 			sb.Append (@"};
@@ -231,6 +222,32 @@ namespace SpvGen
 			foreach (var n in tn) {
 				nodes.Add (n.NormalizeWhitespace ());
 			}
+		}
+
+		private static void CreateInstructionClass (StringBuilder sb, InstructionItem instruction)
+		{
+			sb.AppendLine ($"public class {instruction.Name} : Instruction");
+			sb.AppendLine ("{");
+
+			sb.AppendLine ($"public {instruction.Name} ()");
+
+			if (instruction.Operands == null) {
+				sb.AppendLine ($" : base (\"{instruction.Name}\")");
+			} else {
+				sb.AppendLine ($" : base (\"{instruction.Name}\", new List<Operand> () {{");
+				foreach (var operand in instruction.Operands) {
+					if (operand.Name == null) {
+						sb.AppendLine ($"new Operand (new {operand.Kind} (), null, OperandQuantifier.{operand.Quantifier}),");
+					} else {
+						sb.AppendLine ($"new Operand (new {operand.Kind} (), \"{operand.Name}\", OperandQuantifier.{operand.Quantifier}),");
+					}
+				}
+				sb.AppendLine ("} )");
+			}
+
+			sb.AppendLine ("{}");
+
+			sb.AppendLine ("}");
 		}
 
 		class OperatorKindEnumerant
@@ -286,14 +303,28 @@ namespace SpvGen
 				sb.AppendLine ("{");
 					
 				if (enumType == SpirvEnumType.Bit) {
+					sb.AppendLine ("public override bool IsBitEnumeration { get { return true; } }");
 					sb.AppendLine ("[Flags]");
+				} else {
+					sb.AppendLine ("public override bool IsBitEnumeration { get { return false; } }");
 				}
+
 				sb.AppendLine ("public enum Values");
 				sb.AppendLine ("{");
 				foreach (var e in enumerants) {
 					sb.AppendFormat ("{0} = {1},\n", e.Name, e.Value);
 				}
 				sb.AppendLine ("}");
+
+				sb.Append ("public override string GetValueName (uint value) { return ((Values)value).ToString (); }");
+
+				sb.AppendLine ("public override IEnumerable<uint> EnumerationValues { get {");
+				sb.AppendLine ("return new List<uint> () {");
+				foreach (var e in enumerants) {
+					sb.AppendFormat ("{0},\n", e.Value);
+				}
+				sb.AppendLine ("};");
+				sb.AppendLine ("} }");
 
 				bool hasParameters = false;
 				foreach (var e in enumerants) {

@@ -57,10 +57,7 @@ namespace SpirV
 					var wordCount = (ushort)(instructionStart >> 16);
 					var opCode = (int)(instructionStart & 0xFF);
 
-					List<uint> words = new List<uint> ()
-					{
-						instructionStart
-					};
+					List<uint> words = new List<uint> ();
 
 					for (ushort i = 0; i < wordCount - 1; ++i) {
 						words.Add (reader.ReadWord ());
