@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace SpirV
 {
@@ -26,67 +27,67 @@ namespace SpirV
 			}
 		}
 
+		private static void AppendValue (StringBuilder sb, object value)
+		{
+			if (value is IList<object> asList) {
+				for (int i = 0; i < asList.Count; ++i) {
+					AppendValue (sb, asList [i]);
+					if (i < (asList.Count - 1)) {
+						sb.Append (" ");
+					}
+				}
+			} else {
+				sb.Append (value.ToString ());
+			}
+		}
+
 		public override string ToString ()
 		{
-			var leftSide = new StringBuilder ();
-			var rightSide = new StringBuilder ();
-			rightSide.Append ($"{Instruction.Name} ");
+			// Process return type/id first -- these are always first
+			if (Instruction.Operands.Count == 0) {
+				return Instruction.Name;
+			}
 
-			for (int i = 0; i < Instruction.Operands.Count; ++i) {
-				if (i >= Words.Count) {
-					break;
-				}
+			var sb = new StringBuilder ();
 
-				var operand = Instruction.Operands [i];
+			int currentWord = 0;
+			int currentOperand = 0;
+			if (Instruction.Operands [currentOperand].Kind is IdResultType) {
+				++currentOperand;
+				++currentWord;
+			}
 
-				switch (operand.Kind) {
-					case IdResult r: leftSide.Append ($"%{Words [i]} "); break;
-					case IdResultType r: leftSide.Append ($"{Words [i]} "); break;
-						
-					case EnumOperandKind e: {
-							if (e.IsBitEnumeration) {
-								foreach (var bit in e.EnumerationValues) {
-									if ((Words [i] & bit) != 0) {
-										var p = e.CreateParameter (bit);
-										rightSide.Append (e.GetValueName (Words [i]));
-										rightSide.Append (" ");
-										if (p != null) { 
-											for (int j = 0; j < p.OperandKinds.Count; ++j) {
-												rightSide.Append (OperandToString (p.OperandKinds [j], Words [i + j + 1]));
-												rightSide.Append (" ");
-												i += p.OperandKinds.Count;
-											}
-										}
-									}
-								}
-							} else {
-								rightSide.Append (e.GetValueName (Words [i]));
-								rightSide.Append (" ");
-								var p = e.CreateParameter (Words [i]);
-								if (p != null) {
-									for (int j = 0; j < p.OperandKinds.Count; ++j) {
-										rightSide.Append (OperandToString (p.OperandKinds [j], Words [i + j + 1]));
-										rightSide.Append (" ");
-										i += p.OperandKinds.Count;
-									}
-								}
-							}
-							break;
-						}
-					default:
-						rightSide.Append (OperandToString (operand.Kind, Words [i]));
-						rightSide.Append (" ");
-						break;
+			if (Instruction.Operands [currentOperand].Kind is IdResult) {
+				Instruction.Operands [currentOperand].Kind.ReadValue (Words.Skip (currentWord).ToList (),
+					out object value, out int wordsUsed);
+
+				currentWord += wordsUsed;
+				++currentOperand;
+
+				AppendValue (sb, value);
+				sb.Append (" = ");
+			}
+
+			sb.Append (Instruction.Name);
+			sb.Append (" ");
+
+			for (;currentWord < Words.Count;) {
+				var operand = Instruction.Operands [currentOperand];
+
+				operand.Kind.ReadValue (Words.Skip (currentWord).ToList (),
+					out object value, out int wordsUsed);
+
+				AppendValue (sb, value);
+				sb.Append (" ");
+
+				currentWord += wordsUsed;
+
+				if (operand.Quantifier != OperandQuantifier.Varying) { 
+					++currentOperand;
 				}
 			}
 
-			if (leftSide.Length > 0) {
-				leftSide.Append ("= ");
-			}
-
-			leftSide.Append (rightSide.ToString ());
-
-			return leftSide.ToString ();
+			return sb.ToString ();
 		}
     }
 }
