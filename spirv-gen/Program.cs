@@ -258,10 +258,10 @@ namespace SpvGen
 			public IList<string> Parameters;
 		}
 
-		private static void ProcessOperandKinds (Newtonsoft.Json.Linq.JToken operandKinds,
+		private static void ProcessOperandTypes (Newtonsoft.Json.Linq.JToken OperandTypes,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
-			foreach (var n in operandKinds) {
+			foreach (var n in OperandTypes) {
 				// We only handle the Enums here, the others are handled 
 				// manually
 				if (n.Value<string> ("category") != "ValueEnum"
@@ -299,7 +299,7 @@ namespace SpvGen
 				}
 
 				StringBuilder sb = new StringBuilder ();
-				sb.AppendLine ($"public class {kind} : EnumOperandKind");
+				sb.AppendLine ($"public class {kind} : Enum");
 				sb.AppendLine ("{");
 					
 				if (enumType == SpirvEnumType.Bit) {
@@ -331,8 +331,8 @@ namespace SpvGen
 					if (e.Parameters == null) continue;
 					sb.AppendLine ($"public class {e.Name}Parameter : Parameter");
 					sb.AppendLine ("{");
-					sb.AppendLine ("public override IList<OperandKind> OperandKinds { get { return operandKinds_; } }");
-					sb.AppendLine ("private static IList<OperandKind> operandKinds_ = new List<OperandKind> () {");
+					sb.AppendLine ("public override IList<OperandType> OperandTypes { get { return OperandTypes_; } }");
+					sb.AppendLine ("private static IList<OperandType> OperandTypes_ = new List<OperandType> () {");
 
 					foreach (var p in e.Parameters) {
 						sb.AppendLine ($"new {p} (),");
@@ -345,7 +345,7 @@ namespace SpvGen
 				}
 
 				if (hasParameters) {
-					OperandKindCreateParameterMethod (enumerants, sb);
+					OperandTypeCreateParameterMethod (enumerants, sb);
 				}
 
 				sb.AppendLine ("}");
@@ -357,7 +357,7 @@ namespace SpvGen
 			}
 		}
 
-		private static void OperandKindCreateParameterMethod (IList<OperatorKindEnumerant> enumerants, StringBuilder sb)
+		private static void OperandTypeCreateParameterMethod (IList<OperatorKindEnumerant> enumerants, StringBuilder sb)
 		{
 			sb.AppendLine ("public override Parameter CreateParameter (uint value)");
 			sb.AppendLine ("{");
@@ -398,7 +398,7 @@ namespace SpvGen
 			var nodes = new List<SyntaxNode> ();
 
 			ProcessInstructions (doc ["instructions"], generator, nodes);
-			ProcessOperandKinds (doc ["operand_kinds"], generator, nodes);
+			ProcessOperandTypes (doc ["operand_kinds"], generator, nodes);
 						
 			var cu = generator.CompilationUnit (
 				generator.NamespaceImportDeclaration ("System"),

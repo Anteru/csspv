@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SpirV
 {
-	public class OperandKind
+	public class OperandType
 	{
 		public virtual bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
@@ -15,12 +15,17 @@ namespace SpirV
 		}
 	}
 
-	public class Literal : OperandKind
+	public class Literal : OperandType
 	{
 
 	}
 
-	public class LiteralInteger : Literal
+	public class LiteralNumber : Literal
+	{
+	}
+
+	// The SPIR-V JSON file uses only literal integers
+	public class LiteralInteger : LiteralNumber
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
@@ -83,10 +88,10 @@ namespace SpirV
 
 	public class Parameter
 	{
-		public virtual IList<OperandKind> OperandKinds { get; }
+		public virtual IList<OperandType> OperandTypes { get; }
 	}
 
-	public abstract class EnumOperandKind : OperandKind
+	public abstract class Enum : OperandType
 	{
 		public virtual Parameter CreateParameter (uint value) => null;
 		public virtual bool IsBitEnumeration { get; }
@@ -106,8 +111,8 @@ namespace SpirV
 						result.Add (GetValueName (words [0]));
 
 						if (p != null) {
-							for (int j = 0; j < p.OperandKinds.Count; ++j) {
-								p.OperandKinds [j].ReadValue (
+							for (int j = 0; j < p.OperandTypes.Count; ++j) {
+								p.OperandTypes [j].ReadValue (
 									words.Skip (1 + wordsUsedForParameters).ToList (), 
 									out object pValue, out int pWordsUsed);
 								wordsUsedForParameters += pWordsUsed;
@@ -116,14 +121,13 @@ namespace SpirV
 						}
 					}
 				}
-
 			} else {
 				result.Add (GetValueName (words [0]));
 
 				var p = CreateParameter (words [0]);
 				if (p != null) {
-					for (int j = 0; j < p.OperandKinds.Count; ++j) {
-						p.OperandKinds [j].ReadValue (
+					for (int j = 0; j < p.OperandTypes.Count; ++j) {
+						p.OperandTypes [j].ReadValue (
 							words.Skip (1 + wordsUsedForParameters).ToList (),
 							out object pValue, out int pWordsUsed);
 						wordsUsedForParameters += pWordsUsed;
@@ -140,17 +144,29 @@ namespace SpirV
 		}
 	}
 
-	public class IdScope : OperandKind
+	public class IdScope : OperandType
 	{
-		public Scope Scope { get; }
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = (Scope.Values)words [0];
+			wordsUsed = 1;
+
+			return true;
+		}
 	}
 
-	public class IdMemorySemantics : OperandKind
+	public class IdMemorySemantics : OperandType
 	{
-		public MemorySemantics MemorySemantics { get; }
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = (MemorySemantics.Values)words [0];
+			wordsUsed = 1;
+
+			return true;
+		}
 	}
 
-	public class IdOperandKind : OperandKind
+	public class IdType : OperandType
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
@@ -161,33 +177,45 @@ namespace SpirV
 		}
 	}
 
-	public class IdResult : IdOperandKind
+	public class IdResult : IdType
 	{
 	}
 
-	public class IdResultType : IdOperandKind
+	public class IdResultType : IdType
 	{
 	}
 
-	public class IdRef : IdOperandKind
+	public class IdRef : IdType
 	{
 	}
 
-	public class PairIdRefIdRef : OperandKind
+	public class PairIdRefIdRef : OperandType
 	{
-		public IdRef Variable { get; }
-		public IdRef Parent { get; }
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = new { Variable = words [0], Parent = words [1] };
+			wordsUsed = 2;
+			return true;
+		}
 	}
 
-	public class PairIdRefLiteralInteger : OperandKind
+	public class PairIdRefLiteralInteger : OperandType
 	{
-		public IdRef Type { get; }
-		public LiteralInteger Member { get; }
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = new { Type = words [0], Member = words [1] };
+			wordsUsed = 2;
+			return true;
+		}
 	}
 
-	public class PairLiteralIntegerIdRef : OperandKind
+	public class PairLiteralIntegerIdRef : OperandType
 	{
-		public LiteralInteger Selector { get; }
-		public IdRef Label { get; }
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = new { Selector = words [0], Label = words [1] };
+			wordsUsed = 2;
+			return true;
+		}
 	}
 }

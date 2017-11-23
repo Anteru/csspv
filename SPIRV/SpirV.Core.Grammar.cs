@@ -2316,7 +2316,7 @@ namespace SpirV
             }
         }
     }
-    public class ImageOperands : EnumOperandKind
+    public class ImageOperands : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2356,113 +2356,113 @@ namespace SpirV
 
         public class BiasParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class LodParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class GradParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), new IdRef(), };
         }
 
         public class ConstOffsetParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class OffsetParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class ConstOffsetsParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class SampleParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class MinLodParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
@@ -2491,7 +2491,7 @@ namespace SpirV
             return null;
         }
     }
-    public class FPFastMathMode : EnumOperandKind
+    public class FPFastMathMode : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2526,7 +2526,7 @@ namespace SpirV
             }
         }
     }
-    public class SelectionControl : EnumOperandKind
+    public class SelectionControl : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2558,7 +2558,7 @@ namespace SpirV
             }
         }
     }
-    public class LoopControl : EnumOperandKind
+    public class LoopControl : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2594,15 +2594,15 @@ namespace SpirV
 
         public class DependencyLengthParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
@@ -2617,7 +2617,7 @@ namespace SpirV
             return null;
         }
     }
-    public class FunctionControl : EnumOperandKind
+    public class FunctionControl : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2651,7 +2651,7 @@ namespace SpirV
             }
         }
     }
-    public class MemorySemantics : EnumOperandKind
+    public class MemorySemantics : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2692,7 +2692,7 @@ namespace SpirV
             }
         }
     }
-    public class MemoryAccess : EnumOperandKind
+    public class MemoryAccess : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2727,15 +2727,15 @@ namespace SpirV
 
         public class AlignedParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
@@ -2750,7 +2750,7 @@ namespace SpirV
             return null;
         }
     }
-    public class KernelProfilingInfo : EnumOperandKind
+    public class KernelProfilingInfo : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2781,7 +2781,7 @@ namespace SpirV
             }
         }
     }
-    public class SourceLanguage : EnumOperandKind
+    public class SourceLanguage : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2815,7 +2815,7 @@ namespace SpirV
             }
         }
     }
-    public class ExecutionModel : EnumOperandKind
+    public class ExecutionModel : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2850,7 +2850,7 @@ namespace SpirV
             }
         }
     }
-    public class AddressingModel : EnumOperandKind
+    public class AddressingModel : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2881,7 +2881,7 @@ namespace SpirV
             }
         }
     }
-    public class MemoryModel : EnumOperandKind
+    public class MemoryModel : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2912,7 +2912,7 @@ namespace SpirV
             }
         }
     }
-    public class ExecutionMode : EnumOperandKind
+    public class ExecutionMode : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -2982,141 +2982,141 @@ namespace SpirV
 
         public class InvocationsParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class LocalSizeParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
         }
 
         public class LocalSizeHintParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
         }
 
         public class OutputVerticesParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class VecTypeHintParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class SubgroupSizeParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class SubgroupsPerWorkgroupParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class SubgroupsPerWorkgroupIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class LocalSizeIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), new IdRef(), new IdRef(), };
         }
 
         public class LocalSizeHintIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
@@ -3149,7 +3149,7 @@ namespace SpirV
             return null;
         }
     }
-    public class StorageClass : EnumOperandKind
+    public class StorageClass : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3190,7 +3190,7 @@ namespace SpirV
             }
         }
     }
-    public class Dim : EnumOperandKind
+    public class Dim : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3225,7 +3225,7 @@ namespace SpirV
             }
         }
     }
-    public class SamplerAddressingMode : EnumOperandKind
+    public class SamplerAddressingMode : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3258,7 +3258,7 @@ namespace SpirV
             }
         }
     }
-    public class SamplerFilterMode : EnumOperandKind
+    public class SamplerFilterMode : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3288,7 +3288,7 @@ namespace SpirV
             }
         }
     }
-    public class ImageFormat : EnumOperandKind
+    public class ImageFormat : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3356,7 +3356,7 @@ namespace SpirV
             }
         }
     }
-    public class ImageChannelOrder : EnumOperandKind
+    public class ImageChannelOrder : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3404,7 +3404,7 @@ namespace SpirV
             }
         }
     }
-    public class ImageChannelDataType : EnumOperandKind
+    public class ImageChannelDataType : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3449,7 +3449,7 @@ namespace SpirV
             }
         }
     }
-    public class FPRoundingMode : EnumOperandKind
+    public class FPRoundingMode : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3481,7 +3481,7 @@ namespace SpirV
             }
         }
     }
-    public class LinkageType : EnumOperandKind
+    public class LinkageType : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3511,7 +3511,7 @@ namespace SpirV
             }
         }
     }
-    public class AccessQualifier : EnumOperandKind
+    public class AccessQualifier : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3542,7 +3542,7 @@ namespace SpirV
             }
         }
     }
-    public class FunctionParameterAttribute : EnumOperandKind
+    public class FunctionParameterAttribute : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3578,7 +3578,7 @@ namespace SpirV
             }
         }
     }
-    public class Decoration : EnumOperandKind
+    public class Decoration : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -3659,323 +3659,323 @@ namespace SpirV
 
         public class SpecIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class ArrayStrideParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class MatrixStrideParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class BuiltInParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new BuiltIn(), };
         }
 
         public class StreamParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class LocationParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class ComponentParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class IndexParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class BindingParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class DescriptorSetParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class OffsetParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class XfbBufferParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class XfbStrideParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class FuncParamAttrParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new FunctionParameterAttribute(), };
         }
 
         public class FPRoundingModeParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new FPRoundingMode(), };
         }
 
         public class FPFastMathModeParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new FPFastMathMode(), };
         }
 
         public class LinkageAttributesParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralString(), new LinkageType(), };
         }
 
         public class InputAttachmentIndexParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class AlignmentParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class MaxByteOffsetParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
         public class AlignmentIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class MaxByteOffsetIdParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new IdRef(), };
         }
 
         public class SecondaryViewportRelativeNVParameter : Parameter
         {
-            public override IList<OperandKind> OperandKinds
+            public override IList<OperandType> OperandTypes
             {
                 get
                 {
-                    return operandKinds_;
+                    return OperandTypes_;
                 }
             }
 
-            private static IList<OperandKind> operandKinds_ = new List<OperandKind>()
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
         {new LiteralInteger(), };
         }
 
@@ -4034,7 +4034,7 @@ namespace SpirV
             return null;
         }
     }
-    public class BuiltIn : EnumOperandKind
+    public class BuiltIn : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -4126,7 +4126,7 @@ namespace SpirV
             }
         }
     }
-    public class Scope : EnumOperandKind
+    public class Scope : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -4159,7 +4159,7 @@ namespace SpirV
             }
         }
     }
-    public class GroupOperation : EnumOperandKind
+    public class GroupOperation : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -4190,7 +4190,7 @@ namespace SpirV
             }
         }
     }
-    public class KernelEnqueueFlags : EnumOperandKind
+    public class KernelEnqueueFlags : Enum
     {
         public override bool IsBitEnumeration
         {
@@ -4221,7 +4221,7 @@ namespace SpirV
             }
         }
     }
-    public class Capability : EnumOperandKind
+    public class Capability : Enum
     {
         public override bool IsBitEnumeration
         {
