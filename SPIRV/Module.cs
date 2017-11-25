@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Linq;
 
 namespace SpirV
 {
@@ -15,6 +16,7 @@ namespace SpirV
 			types_ = CollectTypes (instructions_);
 			ResolveResultTypes (instructions_, types_);
 			AssignMemberNames (instructions_, types_);
+			ResolveConstants (instructions_, types_);
 		}
 
 		public static Module ReadFrom (System.IO.Stream stream)
@@ -212,6 +214,73 @@ namespace SpirV
 			}
 		}
 
+		/// <summary>
+		/// Resolve constants which require the type to be known
+		/// 
+		/// This must run after all types have been collected
+		/// </summary>
+		private static void ResolveConstants (IList<ParsedInstruction> instructions,
+			IDictionary<uint, Type> types)
+		{
+			foreach (var i in instructions) {
+				if (i.Instruction is OpConstant c) {
+					var t = i.ResultType;
+					System.Diagnostics.Debug.Assert (t != null);
+					System.Diagnostics.Debug.Assert (t is ScalarType);
+
+					i.Operands [2].Value = ConvertConstant (
+						i.ResultType as ScalarType,
+						i.Words.Skip (1).ToList ());
+				}
+			}
+		}
+
+		private static object ConvertConstant (ScalarType type, 
+			IReadOnlyList<uint> words)
+		{
+			byte [] bytes = new byte [words.Count * 4];
+
+			for (int i = 0; i < words.Count; ++i) {
+				BitConverter.GetBytes (words [i]).CopyTo (bytes, i * 4);
+			}
+
+			switch (type) {
+				case IntegerType i: {
+						if (i.Signed) {
+							if (i.Width == 16) {
+								return (short)BitConverter.ToInt32 (bytes, 0);
+							} else if (i.Width == 32) {
+								return BitConverter.ToInt32 (bytes, 0);
+							} else if (i.Width == 64) {
+								return BitConverter.ToInt64 (bytes, 0);
+							}
+						} else {
+							if (i.Width == 16) {
+								return (ushort)words [0];
+							} else if (i.Width == 32) {
+								return words [0];
+							} else if (i.Width == 64) {
+								return BitConverter.ToUInt64 (bytes, 0);
+							}
+						}
+
+						throw new Exception ("Cannot construct floating point literal.");
+					}
+
+				case FloatingPointType f: {
+						if (f.Width == 32) {
+							return BitConverter.ToSingle (bytes, 0);
+						} else if (f.Width == 64) {
+							return BitConverter.ToDouble (bytes, 0);
+						} else {
+							throw new Exception ("Cannot construct floating point literal.");
+						}
+					}
+			}
+
+			return null;
+		}
+
 		public ModuleHeader Header { get; }
 		public IReadOnlyList<ParsedInstruction> Instructions { get { return instructions_; } }
 		public IReadOnlyDictionary<uint, Type> Types { get { return types_; } }
@@ -219,5 +288,7 @@ namespace SpirV
 		private List<ParsedInstruction> instructions_;
 
 		private Dictionary<uint, Type> types_;
+
+		private Dictionary<uint, ModuleObject> objects_ = new Dictionary<uint, ModuleObject> ();
     }
 }

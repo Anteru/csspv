@@ -8,7 +8,7 @@ namespace SpirV
 	public class ParsedOperand
 	{
 		public IList<uint> Words { get; }
-		public object Value { get; }
+		public object Value { get; set; }
 
 		public Operand Operand { get; }
 
@@ -17,6 +17,33 @@ namespace SpirV
 			Words = words;
 			Value = value;
 			Operand = operand;
+		}
+	}
+
+	public class ModuleObject
+	{
+
+	}
+
+	public class ObjectReference
+	{
+		public ObjectReference (uint id)
+		{
+			Id = id;
+		}
+
+		public void Resolve (IReadOnlyDictionary<uint, ModuleObject> objects)
+		{
+			object_ = objects [Id];
+		}
+
+		public uint Id { get; }
+
+		private ModuleObject object_;
+
+		public override string ToString ()
+		{
+			return $"%{Id}";
 		}
 	}
 
@@ -82,7 +109,13 @@ namespace SpirV
 					}
 				}
 			} else {
-				sb.Append (value.ToString ());
+				if (value is System.Type t) {
+					sb.Append (t.Name);
+				} else if (value is string s) {
+					sb.AppendFormat ($"\"{s}\"");
+				} else {
+					sb.Append (value.ToString ());
+				}
 			}
 		}
 
@@ -98,7 +131,7 @@ namespace SpirV
 		public override string ToString ()
 		{
 			if (Operands.Count == 0) {
-				return String.Empty;
+				return Instruction.Name;
 			}
 
 			var sb = new StringBuilder ();

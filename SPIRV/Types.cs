@@ -4,12 +4,12 @@ using System.Text;
 
 namespace SpirV
 {
-	public class Type
+	public class Type : ModuleObject
 	{
 
 	}
 
-	class VoidType : Type
+	public class VoidType : Type
 	{
 		public override string ToString ()
 		{
@@ -22,7 +22,7 @@ namespace SpirV
 
 	}
 
-	class BoolType : ScalarType
+	public class BoolType : ScalarType
 	{
 		public override string ToString ()
 		{
@@ -66,7 +66,7 @@ namespace SpirV
 		}
 	}
 
-	class VectorType : Type
+	public class VectorType : Type
 	{
 		public VectorType (ScalarType scalarType, int componentCount)
 		{
@@ -83,7 +83,7 @@ namespace SpirV
 		}
 	}
 
-	class MatrixType : Type
+	public class MatrixType : Type
 	{
 		public MatrixType (VectorType vectorType, int columnCount)
 		{
@@ -101,7 +101,7 @@ namespace SpirV
 		}
 	}
 
-	class ImageType : Type
+	public class ImageType : Type
 	{
 		public ImageType (Type sampledType, Dim.Values dim, int depth,
 			bool isArray, bool isMultisampled, int sampleCount,
@@ -127,17 +127,17 @@ namespace SpirV
 		public AccessQualifier.Values AccessQualifier { get; }
 	}
 
-	class SamplerType : Type
+	public class SamplerType : Type
 	{
 
 	}
 
-	class SampledImage : Type
+	public class SampledImage : Type
 	{
 		public ImageType ImageType { get; }
 	}
 
-	class ArrayType : Type
+	public class ArrayType : Type
 	{
 		public ArrayType (Type elementType, int elementCount)
 		{
@@ -149,7 +149,7 @@ namespace SpirV
 		public Type ElementType { get; }
 	}
 
-	class RuntimeArrayType : Type
+	public class RuntimeArrayType : Type
 	{
 		public RuntimeArrayType (Type elementType)
 		{
@@ -159,7 +159,7 @@ namespace SpirV
 		public Type ElementType { get; }
 	}
 
-	class StructType : Type
+	public class StructType : Type
 	{
 		public StructType (IReadOnlyList<Type> memberTypes)
 		{
@@ -206,12 +206,12 @@ namespace SpirV
 		}
 	}
 
-	class OpaqueType : Type
+	public class OpaqueType : Type
 	{
 		public string Name { get; }
 	}
 
-	class PointerType : Type
+	public class PointerType : Type
 	{
 		public StorageClass.Values StorageClass { get; }
 		public Type Type { get; private set; }
@@ -242,7 +242,7 @@ namespace SpirV
 		}
 	}
 
-	class FunctionType : Type
+	public class FunctionType : Type
 	{
 		public Type ReturnType { get; }
 		public IReadOnlyList<Type> ParameterTypes { get { return parameterTypes_; } }
@@ -256,31 +256,31 @@ namespace SpirV
 		}
 	}
 
-	class EventType : Type
+	public class EventType : Type
 	{
 	}
 
-	class DeviceEventType : Type
+	public class DeviceEventType : Type
 	{
 	}
 
-	class ReserveIdType : Type
+	public class ReserveIdType : Type
 	{
 	}
 
-	class QueueType : Type
+	public class QueueType : Type
 	{
 	}
 
-	class PipeType : Type
+	public class PipeType : Type
 	{
 	}
 
-	class PipeStorage : Type
+	public class PipeStorage : Type
 	{
 	}
 
-	class NamedBarrier : Type
+	public class NamedBarrier : Type
 	{
 	}
 }

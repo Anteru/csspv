@@ -10,7 +10,7 @@ namespace SpirV
 		public virtual bool ReadValue (IList<uint> words, 
 			out object value, out int wordsUsed)
 		{
-			value = this.GetType ().Name;
+			value = this.GetType ();
 			wordsUsed = 1;
 			return true;
 		}
@@ -180,6 +180,13 @@ namespace SpirV
 
 	public class IdResult : IdType
 	{
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = new ObjectReference (words [0]);
+			wordsUsed = 1;
+
+			return true;
+		}
 	}
 
 	public class IdResultType : IdType
@@ -188,13 +195,20 @@ namespace SpirV
 
 	public class IdRef : IdType
 	{
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = new ObjectReference (words [0]);
+			wordsUsed = 1;
+
+			return true;
+		}
 	}
 
 	public class PairIdRefIdRef : OperandType
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			value = new { Variable = words [0], Parent = words [1] };
+			value = new { Variable = new ObjectReference (words [0]), Parent = new ObjectReference (words [1]) };
 			wordsUsed = 2;
 			return true;
 		}
@@ -204,7 +218,7 @@ namespace SpirV
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			value = new { Type = words [0], Member = words [1] };
+			value = new { Type = new ObjectReference (words [0]), Member = words [1] };
 			wordsUsed = 2;
 			return true;
 		}
@@ -214,7 +228,7 @@ namespace SpirV
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			value = new { Selector = words [0], Label = words [1] };
+			value = new { Selector = words [0], Label = new ObjectReference (words [1]) };
 			wordsUsed = 2;
 			return true;
 		}
