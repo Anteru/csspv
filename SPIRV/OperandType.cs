@@ -7,7 +7,8 @@ namespace SpirV
 {
 	public class OperandType
 	{
-		public virtual bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		public virtual bool ReadValue (IList<uint> words, 
+			out object value, out int wordsUsed)
 		{
 			value = this.GetType ().Name;
 			wordsUsed = 1;

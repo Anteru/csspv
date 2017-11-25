@@ -103,14 +103,28 @@ namespace SpirV
 
 	class ImageType : Type
 	{
+		public ImageType (Type sampledType, Dim.Values dim, int depth,
+			bool isArray, bool isMultisampled, int sampleCount,
+			ImageFormat.Values imageFormat, AccessQualifier.Values accessQualifier)
+		{
+			SampledType = sampledType;
+			Dim = dim;
+			Depth = depth;
+			IsArray = isArray;
+			IsMultisampled = isMultisampled;
+			SampleCount = sampleCount;
+			Format = imageFormat;
+			AccessQualifier = accessQualifier;
+		}
+
 		public Type SampledType { get; }
-		public Dim Dim { get; }
+		public Dim.Values Dim { get; }
 		public int Depth { get; }
 		public bool IsArray { get; }
 		public bool IsMultisampled { get; }
-		public int Sampled { get; }
-		public ImageFormat Format { get; }
-		public AccessQualifier AccessQualifier { get; }
+		public int SampleCount { get; }
+		public ImageFormat.Values Format { get; }
+		public AccessQualifier.Values AccessQualifier { get; }
 	}
 
 	class SamplerType : Type
@@ -150,18 +164,41 @@ namespace SpirV
 		public StructType (IReadOnlyList<Type> memberTypes)
 		{
 			MemberTypes = memberTypes;
+			memberNames_ = new List<string> ();
+
+			for (int i = 0; i < memberTypes.Count; ++i) {
+				memberNames_.Add (String.Empty);
+			}
 		}
 
+		private List<string> memberNames_;
+
 		public IReadOnlyList<Type> MemberTypes { get; }
+		public IReadOnlyList<string> MemberNames { get { return memberNames_; } }
+
+		public void SetMemberName (uint member, string name)
+		{
+			memberNames_ [(int)member] = name;
+		}
 
 		public override string ToString ()
 		{
 			var sb = new StringBuilder ();
 
 			sb.Append ("struct {");
-			foreach (var m in MemberTypes) {
-				sb.Append (m.ToString ());
-				sb.Append ("; ");
+			for(int i = 0; i <  MemberTypes.Count; ++i) {
+				var memberType = MemberTypes [i];
+				sb.Append (memberType.ToString ());
+
+				if (! string.IsNullOrEmpty (memberNames_ [i])) {
+					sb.Append (" ");
+					sb.Append (MemberNames [i]);
+				}
+
+				sb.Append (";");
+				if (i < (MemberTypes.Count - 1)) {
+					sb.Append (" ");
+				}
 			}
 			sb.Append ("}");
 
@@ -198,9 +235,9 @@ namespace SpirV
 		public override string ToString ()
 		{
 			if (Type == null) {
-				return $"* [{StorageClass}]";
+				return $"{StorageClass} *";
 			} else {
-				return $"{Type}* [{StorageClass}]";
+				return $"{StorageClass} {Type}*";
 			}
 		}
 	}
@@ -208,7 +245,15 @@ namespace SpirV
 	class FunctionType : Type
 	{
 		public Type ReturnType { get; }
-		public IReadOnlyList<Type> ParameterTypes { get; }
+		public IReadOnlyList<Type> ParameterTypes { get { return parameterTypes_; } }
+
+		private List<Type> parameterTypes_ = new List<Type> ();
+
+		public FunctionType (Type returnType, List<Type> parameterTypes)
+		{
+			ReturnType = returnType;
+			parameterTypes_ = parameterTypes;
+		}
 	}
 
 	class EventType : Type

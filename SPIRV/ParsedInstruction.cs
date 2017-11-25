@@ -8,6 +8,16 @@ namespace SpirV
 	public class ParsedOperand
 	{
 		public IList<uint> Words { get; }
+		public object Value { get; }
+
+		public Operand Operand { get; }
+
+		public ParsedOperand (IList<uint> words, object value, Operand operand)
+		{
+			Words = words;
+			Value = value;
+			Operand = operand;
+		}
 	}
 
     public class ParsedInstruction
@@ -15,12 +25,42 @@ namespace SpirV
 		public IList<uint> Words { get; }
 
 		public Instruction Instruction { get; }
+		public IList<ParsedOperand> Operands { get; } = new List<ParsedOperand> ();
 
 		public ParsedInstruction (int opCode, IList<uint> words)
 		{
 			Words = words;
 
 			Instruction = Instructions.OpcodeToInstruction [opCode];
+
+			ParseOperands ();
+		}
+
+		private void ParseOperands ()
+		{
+			if (Instruction.Operands.Count == 0) {
+				return;
+			}
+
+			// Word 0 describes this instruction so we can ignore it
+			int currentWord = 1;
+			int currentOperand = 0;
+
+			for (; currentWord < Words.Count;) {
+				var operand = Instruction.Operands [currentOperand];
+
+				operand.Type.ReadValue (Words.Skip (currentWord).ToList (),
+					out object value, out int wordsUsed);
+
+				Operands.Add (new ParsedOperand (Words.Skip (currentWord).Take (wordsUsed).ToList (),
+					value, operand));
+
+				currentWord += wordsUsed;
+
+				if (operand.Quantifier != OperandQuantifier.Varying) {
+					++currentOperand;
+				}
+			}
 		}
 
 		private static string OperandToString (OperandType kind, uint word)
@@ -57,52 +97,34 @@ namespace SpirV
 
 		public override string ToString ()
 		{
-			// Process return type/id first -- these are always first
-			if (Instruction.Operands.Count == 0) {
-				return Instruction.Name;
+			if (Operands.Count == 0) {
+				return String.Empty;
 			}
 
 			var sb = new StringBuilder ();
 
-			// Word 0 describes this instruction so we can ignore it
-			int currentWord = 1;
 			int currentOperand = 0;
 			if (Instruction.Operands [currentOperand].Type is IdResultType) {
-				++currentOperand;
-				++currentWord;
-
 				sb.Append (ResultType.ToString ());
 				sb.Append (" ");
+
+				++currentOperand;
 			}
 
-			if (Instruction.Operands [currentOperand].Type is IdResult) {
-				Instruction.Operands [currentOperand].Type.ReadValue (Words.Skip (currentWord).ToList (),
-					out object value, out int wordsUsed);
-
-				currentWord += wordsUsed;
-				++currentOperand;
-				
-				AppendValue (sb, value);
+			if (currentOperand < Operands.Count && 
+				Instruction.Operands [currentOperand].Type is IdResult) {				
+				AppendValue (sb, Operands [currentOperand].Value);
 				sb.Append (" = ");
+
+				++currentOperand;
 			}
 
 			sb.Append (Instruction.Name);
 			sb.Append (" ");
 
-			for (;currentWord < Words.Count;) {
-				var operand = Instruction.Operands [currentOperand];
-
-				operand.Type.ReadValue (Words.Skip (currentWord).ToList (),
-					out object value, out int wordsUsed);
-
-				AppendValue (sb, value);
+			for (;currentOperand < Operands.Count; ++currentOperand) {
+				AppendValue (sb, Operands [currentOperand].Value);
 				sb.Append (" ");
-
-				currentWord += wordsUsed;
-
-				if (operand.Quantifier != OperandQuantifier.Varying) { 
-					++currentOperand;
-				}
 			}
 
 			return sb.ToString ();
