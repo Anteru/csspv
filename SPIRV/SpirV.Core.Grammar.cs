@@ -2327,7 +2327,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             Bias = 1,
@@ -2345,20 +2345,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 4, 8, 16, 32, 64, 128, };
             }
         }
 
@@ -2510,7 +2496,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             NotNaN = 1,
@@ -2527,20 +2513,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 4, 8, 16, };
-            }
-        }
     }
     public class SelectionControl : Enum
     {
@@ -2553,7 +2525,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             Flatten = 1,
@@ -2565,20 +2537,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
             }
         }
     }
@@ -2593,7 +2551,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             Unroll = 1,
@@ -2607,20 +2565,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 4, 8, };
             }
         }
 
@@ -2660,7 +2604,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             Inline = 1,
@@ -2676,20 +2620,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 4, 8, };
-            }
-        }
     }
     public class MemorySemantics : Enum
     {
@@ -2702,7 +2632,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             Relaxed = 0,
             None = 0,
@@ -2725,20 +2655,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 0, 2, 4, 8, 16, 64, 128, 256, 512, 1024, 2048, };
-            }
-        }
     }
     public class MemoryAccess : Enum
     {
@@ -2751,7 +2667,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             Volatile = 1,
@@ -2764,20 +2680,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 4, };
             }
         }
 
@@ -2817,7 +2719,7 @@ namespace SpirV
         }
 
         [Flags]
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             CmdExecTime = 1,
@@ -2828,20 +2730,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, };
             }
         }
     }
@@ -2855,7 +2743,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Unknown = 0,
             ESSL = 1,
@@ -2872,20 +2760,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, };
-            }
-        }
     }
     public class ExecutionModel : Enum
     {
@@ -2897,7 +2771,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Vertex = 0,
             TessellationControl = 1,
@@ -2915,20 +2789,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, };
-            }
-        }
     }
     public class AddressingModel : Enum
     {
@@ -2940,7 +2800,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Logical = 0,
             Physical32 = 1,
@@ -2954,20 +2814,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
-            }
-        }
     }
     public class MemoryModel : Enum
     {
@@ -2979,7 +2825,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Simple = 0,
             GLSL450 = 1,
@@ -2993,20 +2839,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
-            }
-        }
     }
     public class ExecutionMode : Enum
     {
@@ -3018,7 +2850,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Invocations = 0,
             SpacingEqual = 1,
@@ -3067,20 +2899,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 4446, 5027, };
             }
         }
 
@@ -3263,7 +3081,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             UniformConstant = 0,
             Input = 1,
@@ -3287,20 +3105,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, };
-            }
-        }
     }
     public class Dim : Enum
     {
@@ -3312,7 +3116,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Dim1D = 0,
             Dim2D = 1,
@@ -3330,20 +3134,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, };
-            }
-        }
     }
     public class SamplerAddressingMode : Enum
     {
@@ -3355,7 +3145,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             None = 0,
             ClampToEdge = 1,
@@ -3371,20 +3161,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, };
-            }
-        }
     }
     public class SamplerFilterMode : Enum
     {
@@ -3396,7 +3172,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Nearest = 0,
             Linear = 1,
@@ -3407,20 +3183,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, };
             }
         }
     }
@@ -3434,7 +3196,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Unknown = 0,
             Rgba32f = 1,
@@ -3485,20 +3247,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, };
-            }
-        }
     }
     public class ImageChannelOrder : Enum
     {
@@ -3510,7 +3258,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             R = 0,
             A = 1,
@@ -3541,20 +3289,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, };
-            }
-        }
     }
     public class ImageChannelDataType : Enum
     {
@@ -3566,7 +3300,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             SnormInt8 = 0,
             SnormInt16 = 1,
@@ -3594,20 +3328,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, };
-            }
-        }
     }
     public class FPRoundingMode : Enum
     {
@@ -3619,7 +3339,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             RTE = 0,
             RTZ = 1,
@@ -3634,20 +3354,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, };
-            }
-        }
     }
     public class LinkageType : Enum
     {
@@ -3659,7 +3365,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Export = 0,
             Import = 1,
@@ -3670,20 +3376,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, };
             }
         }
     }
@@ -3697,7 +3389,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             ReadOnly = 0,
             WriteOnly = 1,
@@ -3711,20 +3403,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
-            }
-        }
     }
     public class FunctionParameterAttribute : Enum
     {
@@ -3736,7 +3414,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Zext = 0,
             Sext = 1,
@@ -3755,20 +3433,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, };
-            }
-        }
     }
     public class Decoration : Enum
     {
@@ -3780,7 +3444,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             RelaxedPrecision = 0,
             SpecId = 1,
@@ -3840,20 +3504,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 4999, 5248, 5250, 5252, 5256, };
             }
         }
 
@@ -4244,7 +3894,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Position = 0,
             PointSize = 1,
@@ -4319,20 +3969,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36, 37, 38, 39, 40, 41, 42, 43, 4416, 4417, 4418, 4419, 4420, 4424, 4425, 4426, 4438, 4440, 4992, 4993, 4994, 4995, 4996, 4997, 4998, 5014, 5253, 5257, 5258, 5261, 5262, };
-            }
-        }
     }
     public class Scope : Enum
     {
@@ -4344,7 +3980,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             CrossDevice = 0,
             Device = 1,
@@ -4360,20 +3996,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, };
-            }
-        }
     }
     public class GroupOperation : Enum
     {
@@ -4385,7 +4007,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Reduce = 0,
             InclusiveScan = 1,
@@ -4399,20 +4021,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
-            }
-        }
     }
     public class KernelEnqueueFlags : Enum
     {
@@ -4424,7 +4032,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             NoWait = 0,
             WaitKernel = 1,
@@ -4438,20 +4046,6 @@ namespace SpirV
                 return typeof(Values);
             }
         }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, };
-            }
-        }
     }
     public class Capability : Enum
     {
@@ -4463,7 +4057,7 @@ namespace SpirV
             }
         }
 
-        public enum Values
+        public enum Values : uint
         {
             Matrix = 0,
             Shader = 1,
@@ -4560,20 +4154,6 @@ namespace SpirV
             get
             {
                 return typeof(Values);
-            }
-        }
-
-        public override string GetValueName(uint value)
-        {
-            return ((Values)value).ToString();
-        }
-
-        public override IEnumerable<uint> EnumerationValues
-        {
-            get
-            {
-                return new List<uint>()
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 4423, 4427, 4431, 4433, 4433, 4434, 4434, 4435, 4436, 4437, 4439, 4441, 4442, 4445, 4447, 5009, 5010, 5013, 5015, 5249, 5251, 5254, 5254, 5255, 5259, 5260, 5568, 5569, 5570, };
             }
         }
     }

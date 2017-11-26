@@ -309,7 +309,7 @@ namespace SpvGen
 					sb.AppendLine ("public override bool IsBitEnumeration { get { return false; } }");
 				}
 
-				sb.AppendLine ("public enum Values");
+				sb.AppendLine ("public enum Values : uint");
 				sb.AppendLine ("{");
 				foreach (var e in enumerants) {
 					sb.AppendFormat ("{0} = {1},\n", e.Name, e.Value);
@@ -317,16 +317,6 @@ namespace SpvGen
 				sb.AppendLine ("}");
 
 				sb.AppendLine ("public override System.Type EnumerationType { get { return typeof (Values); } }");
-
-				sb.Append ("public override string GetValueName (uint value) { return ((Values)value).ToString (); }");
-
-				sb.AppendLine ("public override IEnumerable<uint> EnumerationValues { get {");
-				sb.AppendLine ("return new List<uint> () {");
-				foreach (var e in enumerants) {
-					sb.AppendFormat ("{0},\n", e.Value);
-				}
-				sb.AppendLine ("};");
-				sb.AppendLine ("} }");
 
 				bool hasParameters = false;
 				foreach (var e in enumerants) {

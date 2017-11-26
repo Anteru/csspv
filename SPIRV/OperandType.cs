@@ -96,8 +96,6 @@ namespace SpirV
 	{
 		public virtual Parameter CreateParameter (uint value) => null;
 		public virtual bool IsBitEnumeration { get; }
-		public virtual IEnumerable<uint> EnumerationValues { get; }
-		public virtual string GetValueName (uint value) => null;
 
 		public virtual System.Type EnumerationType { get; }
 
@@ -107,7 +105,9 @@ namespace SpirV
 
 			if (IsBitEnumeration) {
 				var result = new Dictionary<uint, object> ();
-				foreach (var bit in EnumerationValues) {
+				foreach (var enumValue in EnumerationType.GetEnumValues()) {
+					var bit = (uint)enumValue;
+
 					// bit == 0 and words [0] == 0 handles the 0x0 = None cases
 					if ((words [0] & bit) != 0 || (bit == 0 && words[0] == 0)) {
 						var p = CreateParameter (bit);
