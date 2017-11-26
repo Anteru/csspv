@@ -301,7 +301,7 @@ namespace SpvGen
 				StringBuilder sb = new StringBuilder ();
 				sb.AppendLine ($"public class {kind} : Enum");
 				sb.AppendLine ("{");
-					
+
 				if (enumType == SpirvEnumType.Bit) {
 					sb.AppendLine ("public override bool IsBitEnumeration { get { return true; } }");
 					sb.AppendLine ("[Flags]");
@@ -315,6 +315,8 @@ namespace SpvGen
 					sb.AppendFormat ("{0} = {1},\n", e.Name, e.Value);
 				}
 				sb.AppendLine ("}");
+
+				sb.AppendLine ("public override System.Type EnumerationType { get { return typeof (Values); } }");
 
 				sb.Append ("public override string GetValueName (uint value) { return ((Values)value).ToString (); }");
 

@@ -2340,6 +2340,14 @@ namespace SpirV
             MinLod = 128,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2512,6 +2520,14 @@ namespace SpirV
             Fast = 16,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2542,6 +2558,14 @@ namespace SpirV
             None = 0,
             Flatten = 1,
             DontFlatten = 2,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -2576,6 +2600,14 @@ namespace SpirV
             DontUnroll = 2,
             DependencyInfinite = 4,
             DependencyLength = 8,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -2637,6 +2669,14 @@ namespace SpirV
             Const = 8,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2678,6 +2718,14 @@ namespace SpirV
             ImageMemory = 2048,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2709,6 +2757,14 @@ namespace SpirV
             Volatile = 1,
             Aligned = 2,
             Nontemporal = 4,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -2767,6 +2823,14 @@ namespace SpirV
             CmdExecTime = 1,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2799,6 +2863,14 @@ namespace SpirV
             OpenCL_C = 3,
             OpenCL_CPP = 4,
             HLSL = 5,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -2836,6 +2908,14 @@ namespace SpirV
             Kernel = 6,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2867,6 +2947,14 @@ namespace SpirV
             Physical64 = 2,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -2896,6 +2984,14 @@ namespace SpirV
             Simple = 0,
             GLSL450 = 1,
             OpenCL = 2,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -2964,6 +3060,14 @@ namespace SpirV
             LocalSizeHintId = 39,
             PostDepthCoverage = 4446,
             StencilRefReplacingEXT = 5027,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -3176,6 +3280,14 @@ namespace SpirV
             StorageBuffer = 12,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3211,6 +3323,14 @@ namespace SpirV
             SubpassData = 6,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3244,6 +3364,14 @@ namespace SpirV
             RepeatMirrored = 4,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3272,6 +3400,14 @@ namespace SpirV
         {
             Nearest = 0,
             Linear = 1,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -3342,6 +3478,14 @@ namespace SpirV
             R8ui = 39,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3390,6 +3534,14 @@ namespace SpirV
             ABGR = 19,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3435,6 +3587,14 @@ namespace SpirV
             UnormInt101010_2 = 16,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3467,6 +3627,14 @@ namespace SpirV
             RTN = 3,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -3495,6 +3663,14 @@ namespace SpirV
         {
             Export = 0,
             Import = 1,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -3526,6 +3702,14 @@ namespace SpirV
             ReadOnly = 0,
             WriteOnly = 1,
             ReadWrite = 2,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -3562,6 +3746,14 @@ namespace SpirV
             NoCapture = 5,
             NoWrite = 6,
             NoReadWrite = 7,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -3641,6 +3833,14 @@ namespace SpirV
             PassthroughNV = 5250,
             ViewportRelativeNV = 5252,
             SecondaryViewportRelativeNV = 5256,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -4112,6 +4312,14 @@ namespace SpirV
             ViewportMaskPerViewNV = 5262,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -4145,6 +4353,14 @@ namespace SpirV
             Invocation = 4,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -4176,6 +4392,14 @@ namespace SpirV
             ExclusiveScan = 2,
         }
 
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
+        }
+
         public override string GetValueName(uint value)
         {
             return ((Values)value).ToString();
@@ -4205,6 +4429,14 @@ namespace SpirV
             NoWait = 0,
             WaitKernel = 1,
             WaitWorkGroup = 2,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
@@ -4321,6 +4553,14 @@ namespace SpirV
             SubgroupShuffleINTEL = 5568,
             SubgroupBufferBlockIOINTEL = 5569,
             SubgroupImageBlockIOINTEL = 5570,
+        }
+
+        public override System.Type EnumerationType
+        {
+            get
+            {
+                return typeof(Values);
+            }
         }
 
         public override string GetValueName(uint value)
