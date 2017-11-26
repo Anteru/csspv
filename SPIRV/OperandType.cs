@@ -99,32 +99,40 @@ namespace SpirV
 		public virtual IEnumerable<uint> EnumerationValues { get; }
 		public virtual string GetValueName (uint value) => null;
 
+		public virtual System.Type EnumerationType { get; }
+
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			IList<object> result = new List<object> ();
 			var wordsUsedForParameters = 0;
 
 			if (IsBitEnumeration) {
+				var result = new Dictionary<uint, object> ();
 				foreach (var bit in EnumerationValues) {
-					if ((words [0] & bit) != 0) {
+					// bit == 0 and words [0] == 0 handles the 0x0 = None cases
+					if ((words [0] & bit) != 0 || (bit == 0 && words[0] == 0)) {
 						var p = CreateParameter (bit);
 
-						result.Add (GetValueName (words [0]));
+						var resultItems = new List<object> ();
 
 						if (p != null) {
 							for (int j = 0; j < p.OperandTypes.Count; ++j) {
 								p.OperandTypes [j].ReadValue (
-									words.Skip (1 + wordsUsedForParameters).ToList (), 
+									words.Skip (1 + wordsUsedForParameters).ToList (),
 									out object pValue, out int pWordsUsed);
 								wordsUsedForParameters += pWordsUsed;
-								result.Add (pValue);
+								resultItems.Add (pValue);
 							}
 						}
+
+						result [bit] = resultItems;
 					}
 				}
-			} else {
-				result.Add (GetValueName (words [0]));
 
+				value = new CompoundOperandValue (EnumerationType, result);
+			} else {
+				var result = new Dictionary<uint, object> ();
+
+				var resultItems = new List<object> ();
 				var p = CreateParameter (words [0]);
 				if (p != null) {
 					for (int j = 0; j < p.OperandTypes.Count; ++j) {
@@ -132,14 +140,16 @@ namespace SpirV
 							words.Skip (1 + wordsUsedForParameters).ToList (),
 							out object pValue, out int pWordsUsed);
 						wordsUsedForParameters += pWordsUsed;
-						result.Add (pValue);
+						resultItems.Add (pValue);
 					}
 				}
 
+				result [words[0]] = resultItems;
+
+				value = new CompoundOperandValue (EnumerationType, result);
 			}
 
 			wordsUsed = wordsUsedForParameters + 1;
-			value = result;
 
 			return true;
 		}

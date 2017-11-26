@@ -20,6 +20,62 @@ namespace SpirV
 		}
 	}
 
+	public class VaryingOperandValue
+	{
+		public VaryingOperandValue (List<object> values)
+		{
+			Values = values;
+		}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder ();
+
+			sb.AppendJoin (" ", Values.Select(x => x.ToString ()));
+
+			return sb.ToString ();
+		}
+
+		public IReadOnlyList<object> Values {get;}
+	}
+
+	public class CompoundOperandValue
+	{
+		public CompoundOperandValue (System.Type enumerationType,
+		 Dictionary<uint, object> values)
+		{
+
+			Values = values;
+			EnumerationType = enumerationType;
+		}
+
+		public System.Type EnumerationType {get;}
+
+		public override string ToString()
+		{
+			var sb = new StringBuilder ();
+
+			foreach (var key in Values.Keys) {
+				sb.Append (EnumerationType.GetEnumName (key));
+				sb.Append(" ");
+				var value = Values[key] as IList<object>;
+
+				if (value.Count != 0) {
+					sb.AppendJoin (" ", value.Select (x => ParsedInstruction.OperandValueToString (x)));
+				}
+			}
+
+			if (sb.Length > 1) {
+				// Cut trailing " "
+				sb.Remove (sb.Length - 1, 1);
+			}
+
+			return sb.ToString ();
+		}
+
+		public IReadOnlyDictionary<uint, object> Values;
+	}
+
 	public class ModuleObject
 	{
 
@@ -73,14 +129,24 @@ namespace SpirV
 			int currentWord = 1;
 			int currentOperand = 0;
 
+			var varyingOperandValues = new List<object> ();
+			var varyingWordStart = 0;
+			Operand varyingOperand = null;
+
 			for (; currentWord < Words.Count;) {
 				var operand = Instruction.Operands [currentOperand];
 
 				operand.Type.ReadValue (Words.Skip (currentWord).ToList (),
 					out object value, out int wordsUsed);
 
-				Operands.Add (new ParsedOperand (Words.Skip (currentWord).Take (wordsUsed).ToList (),
-					value, operand));
+				if (operand.Quantifier == OperandQuantifier.Varying) {
+					varyingOperandValues.Add (value);
+					varyingWordStart = currentWord;
+					varyingOperand = operand;
+				} else {
+					Operands.Add (new ParsedOperand (Words.Skip (currentWord).Take (wordsUsed).ToList (),
+						value, operand));
+				}
 
 				currentWord += wordsUsed;
 
@@ -88,35 +154,27 @@ namespace SpirV
 					++currentOperand;
 				}
 			}
+
+			if (varyingOperand != null) {
+				Operands.Add (new ParsedOperand (Words.Skip (currentWord).ToList (),
+						new VaryingOperandValue (varyingOperandValues), varyingOperand));
+			}
 		}
 
-		private static string OperandToString (OperandType kind, uint word)
+		public static string OperandValueToString (object value)
 		{
-			switch (kind) {
-				case IdRef r: return $"%{word}";
-				default:
-					return kind.ToString ();
+			if (value is System.Type t) {
+				return t.Name;
+			} else if (value is string s) {
+				return $"\"{s}\"";
+			} else {
+				return value.ToString ();
 			}
 		}
 
 		private static void AppendValue (StringBuilder sb, object value)
 		{
-			if (value is IList<object> asList) {
-				for (int i = 0; i < asList.Count; ++i) {
-					AppendValue (sb, asList [i]);
-					if (i < (asList.Count - 1)) {
-						sb.Append (" ");
-					}
-				}
-			} else {
-				if (value is System.Type t) {
-					sb.Append (t.Name);
-				} else if (value is string s) {
-					sb.AppendFormat ($"\"{s}\"");
-				} else {
-					sb.Append (value.ToString ());
-				}
-			}
+			sb.Append (OperandValueToString (value));
 		}
 
 		public Type ResultType { get; private set; }
