@@ -87,12 +87,12 @@ namespace SpirV
 		private static Dictionary<uint, Type> CollectTypes (List<ParsedInstruction> instructions)
 		{
 			Dictionary<uint, Type> result = new Dictionary<uint, Type> ();
-			
+
 			foreach (var i in instructions) {
 				switch (i.Instruction) {
 					case OpTypeInt t: {
 							result [i.Words [1]] = new IntegerType (
-								(int)i.Words [2], 
+								(int)i.Words [2],
 								i.Words [3] == 1u);
 						}
 						break;
@@ -103,19 +103,19 @@ namespace SpirV
 						break;
 					case OpTypeVector t: {
 							result [i.Words [1]] = new VectorType (
-								result [i.Words [2]] as ScalarType, 
+								result [i.Words [2]] as ScalarType,
 								(int)i.Words [3]);
 						}
 						break;
 					case OpTypeMatrix t: {
 							result [i.Words [1]] = new MatrixType (
-								result [i.Words [2]] as VectorType, 
+								result [i.Words [2]] as VectorType,
 								(int)i.Words [3]);
 						}
 						break;
 					case OpTypeArray t: {
 							result [i.Words [1]] = new SpirV.ArrayType (
-								result [i.Words [2]], 
+								result [i.Words [2]],
 								(int)i.Words [3]);
 						}
 						break;
@@ -151,7 +151,7 @@ namespace SpirV
 							result [i.Words [1]] = new PointerType ((StorageClass.Values)i.Words [2]);
 						}
 						break;
-					case OpTypePointer t: { 
+					case OpTypePointer t: {
 							if (result.ContainsKey (i.Words [1])) {
 								// If there is something present, it must have been
 								// a forward reference. The storage type must
@@ -161,7 +161,7 @@ namespace SpirV
 								Debug.Assert (pt.StorageClass == (StorageClass.Values)i.Words [2]);
 
 								pt.ResolveForwardReference (result [i.Words [3]]);
-							} else { 
+							} else {
 								result [i.Words [1]] = new PointerType (
 									(StorageClass.Values)i.Words [2],
 									result [i.Words [3]]
@@ -187,7 +187,7 @@ namespace SpirV
 		/// <summary>
 		/// Resolve the result types for every instruction
 		/// </summary>
-		private static void ResolveResultTypes (IList<ParsedInstruction> instructions, 
+		private static void ResolveResultTypes (IList<ParsedInstruction> instructions,
 			IReadOnlyDictionary<uint, Type> types)
 		{
 			foreach (var i in instructions) {
@@ -208,7 +208,7 @@ namespace SpirV
 					System.Diagnostics.Debug.Assert (t != null);
 
 					//TODO: This should use proper accessors eventually
-					t.SetMemberName ((uint)i.Operands [1].Value, 
+					t.SetMemberName ((uint)i.Operands [1].Value,
 						i.Operands [2].Value as string);
 				}
 			}
@@ -216,7 +216,7 @@ namespace SpirV
 
 		/// <summary>
 		/// Resolve constants which require the type to be known
-		/// 
+		///
 		/// This must run after all types have been collected
 		/// </summary>
 		private static void ResolveConstants (IList<ParsedInstruction> instructions,
@@ -230,12 +230,12 @@ namespace SpirV
 
 					i.Operands [2].Value = ConvertConstant (
 						i.ResultType as ScalarType,
-						i.Words.Skip (1).ToList ());
+						i.Words.Skip (3).ToList ());
 				}
 			}
 		}
 
-		private static object ConvertConstant (ScalarType type, 
+		private static object ConvertConstant (ScalarType type,
 			IReadOnlyList<uint> words)
 		{
 			byte [] bytes = new byte [words.Count * 4];
@@ -284,7 +284,7 @@ namespace SpirV
 		public ModuleHeader Header { get; }
 		public IReadOnlyList<ParsedInstruction> Instructions { get { return instructions_; } }
 		public IReadOnlyDictionary<uint, Type> Types { get { return types_; } }
-		
+
 		private List<ParsedInstruction> instructions_;
 
 		private Dictionary<uint, Type> types_;
