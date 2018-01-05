@@ -57,17 +57,13 @@ namespace SpirV
 
 			foreach (var key in Values.Keys) {
 				sb.Append (EnumerationType.GetEnumName (key));
-				sb.Append(" ");
+
 				var value = Values[key] as IList<object>;
 
 				if (value.Count != 0) {
+					sb.Append (" ");
 					sb.AppendJoin (" ", value.Select (x => ParsedInstruction.OperandValueToString (x)));
 				}
-			}
-
-			if (sb.Length > 1) {
-				// Cut trailing " "
-				sb.Remove (sb.Length - 1, 1);
 			}
 
 			return sb.ToString ();
