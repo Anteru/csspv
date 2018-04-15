@@ -134,7 +134,17 @@ namespace SpirV
 
 	public class SampledImageType : Type
 	{
+		public SampledImageType (ImageType imageType)
+		{
+			ImageType = imageType;
+		}
+		
 		public ImageType ImageType { get; }
+
+		public override string ToString ()
+		{
+			return $"SampledImage{ImageType.Dim} {ImageType.SampledType}";
+		}
 	}
 
 	public class ArrayType : Type

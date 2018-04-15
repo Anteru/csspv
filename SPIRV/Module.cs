@@ -114,13 +114,13 @@ namespace SpirV
 						}
 						break;
 					case OpTypeArray t: {
-							result [i.Words [1]] = new SpirV.ArrayType (
+							result [i.Words [1]] = new ArrayType (
 								result [i.Words [2]],
 								(int)i.Words [3]);
 						}
 						break;
 					case OpTypeRuntimeArray t: {
-							result [i.Words [1]] = new SpirV.RuntimeArrayType (
+							result [i.Words [1]] = new RuntimeArrayType (
 								result [i.Words [2]]);
 						}
 						break;
@@ -138,23 +138,26 @@ namespace SpirV
 						break;
 					case OpTypeImage t: {
 							var sampledType = result [((ObjectReference)i.Operands[1].Value).Id];
-							var dim = (Dim.Values)(((CompoundOperandValue)i.Operands [2].Value).Values.First ().Key);
+							var dim = i.Operands[2].GetSingleEnumValue<Dim.Values> ();
 							var depth = (uint)i.Operands [3].Value;
 							var isArray = (uint)i.Operands [4].Value != 0;
 							var isMultiSampled = (uint)i.Operands [5].Value != 0;
 							var sampled = (uint)i.Operands [6].Value;
 
-							var imageFormat = (ImageFormat.Values)(((CompoundOperandValue)i.Operands [7].Value).Values.First().Key);
+							var imageFormat = i.Operands [7].GetSingleEnumValue<ImageFormat.Values> ();
 
 							result [i.Words [1]] = new ImageType (sampledType,
 								dim,
-								(int)depth, isArray, isMultiSampled, (int)sampled, imageFormat,
+								(int)depth, isArray, isMultiSampled,
+								(int)sampled, imageFormat,
 								i.Operands.Count > 8 ?
-								(AccessQualifier.Values)i.Operands[8].Value : AccessQualifier.Values.ReadOnly);
+								i.Operands[8].GetSingleEnumValue<AccessQualifier.Values> () : AccessQualifier.Values.ReadOnly);
 						}
 						break;
 					case OpTypeSampledImage t: {
-							result [i.Words [1]] = new SampledImageType ();
+							result [i.Words [1]] = new SampledImageType (
+								result [i.Words [2]] as ImageType
+							);
 						}
 						break;
 					case OpTypeFunction t: {

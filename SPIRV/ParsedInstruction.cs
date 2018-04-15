@@ -18,6 +18,12 @@ namespace SpirV
 			Value = value;
 			Operand = operand;
 		}
+
+		public T GetSingleEnumValue<T> () where T : IConvertible
+		{
+			var key = ((CompoundOperandValue)Value).Values.First().Key;
+			return (T)(object)key;
+		}
 	}
 
 	public class VaryingOperandValue
