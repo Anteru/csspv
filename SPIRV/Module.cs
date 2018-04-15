@@ -136,6 +136,27 @@ namespace SpirV
 							result [i.Words [1]] = new VoidType ();
 						}
 						break;
+					case OpTypeImage t: {
+							var sampledType = result [((ObjectReference)i.Operands[1].Value).Id];
+							var dim = (Dim.Values)(((CompoundOperandValue)i.Operands [2].Value).Values.First ().Key);
+							var depth = (uint)i.Operands [3].Value;
+							var isArray = (uint)i.Operands [4].Value != 0;
+							var isMultiSampled = (uint)i.Operands [5].Value != 0;
+							var sampled = (uint)i.Operands [6].Value;
+
+							var imageFormat = (ImageFormat.Values)(((CompoundOperandValue)i.Operands [7].Value).Values.First().Key);
+
+							result [i.Words [1]] = new ImageType (sampledType,
+								dim,
+								(int)depth, isArray, isMultiSampled, (int)sampled, imageFormat,
+								i.Operands.Count > 8 ?
+								(AccessQualifier.Values)i.Operands[8].Value : AccessQualifier.Values.ReadOnly);
+						}
+						break;
+					case OpTypeSampledImage t: {
+							result [i.Words [1]] = new SampledImageType ();
+						}
+						break;
 					case OpTypeFunction t: {
 							var parameterTypes = new List<Type> ();
 							for (int j = 3; j < i.Words.Count; ++j) {

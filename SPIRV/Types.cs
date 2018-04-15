@@ -132,7 +132,7 @@ namespace SpirV
 
 	}
 
-	public class SampledImage : Type
+	public class SampledImageType : Type
 	{
 		public ImageType ImageType { get; }
 	}
