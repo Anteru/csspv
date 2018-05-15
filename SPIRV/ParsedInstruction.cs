@@ -233,10 +233,10 @@ namespace SpirV
 
 		public Type ResultType { get; private set; }
 
-		public void ResolveResultType (IReadOnlyDictionary<uint, Type> types)
+		public void ResolveResultType (IReadOnlyDictionary<uint, ModuleObject> types)
 		{
 			if (Instruction.Operands.Count > 0 && Instruction.Operands [0].Type is IdResultType) {
-				ResultType = types [Words [1]];
+				ResultType = (Type)types [Words [1]];
 			}
 		}
 
@@ -256,8 +256,8 @@ namespace SpirV
 				++currentOperand;
 			}
 
-			if (currentOperand < Operands.Count && 
-				Instruction.Operands [currentOperand].Type is IdResult) {				
+			if (currentOperand < Operands.Count &&
+				Instruction.Operands [currentOperand].Type is IdResult) {
 				AppendValue (sb, Operands [currentOperand].Value);
 				sb.Append (" = ");
 
