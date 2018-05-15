@@ -21,7 +21,17 @@ namespace SpirV
 
 		public T GetSingleEnumValue<T> () where T : System.Enum
 		{
-			return (T)((IValueEnumOperandValue)Value).Value.First();
+			var v = Value as IValueEnumOperandValue;
+
+			if (v.Value.Count == 0) {
+				// If there's no value at all, the enum is probably something
+				// like ImageFormat. In which case we just return the enum value
+				return (T)(object)v.Enumerand;
+			} else {
+				// This means the enum has a value attached to it, so we return
+				// the attached value
+				return (T)((IValueEnumOperandValue)Value).Value.First();
+			}
 		}
 	}
 
