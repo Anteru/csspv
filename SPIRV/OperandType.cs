@@ -110,7 +110,7 @@ namespace SpirV
 			var wordsUsedForParameters = 0;
 
 			if (typeof(T).GetCustomAttributes<FlagsAttribute> ().Any ()) {
-				var result = new Dictionary<uint, object> ();
+				var result = new Dictionary<uint, List<object>> ();
 				foreach (var enumValue in EnumerationType.GetEnumValues()) {
 					var bit = (uint)enumValue;
 
@@ -134,10 +134,8 @@ namespace SpirV
 					}
 				}
 
-				value = new CompoundOperandValue (EnumerationType, result);
+				value = new BitEnumOperandValue<T> (result);
 			} else {
-				var result = new Dictionary<uint, object> ();
-
 				var resultItems = new List<object> ();
 				var p = parameterFactory_.CreateParameter(words [0]);
 				if (p != null) {
@@ -150,9 +148,7 @@ namespace SpirV
 					}
 				}
 
-				result [words[0]] = resultItems;
-
-				value = new CompoundOperandValue (EnumerationType, result);
+				value = new ValueEnumOperandValue<T> ((T)(object)words [0], resultItems);
 			}
 
 			wordsUsed = wordsUsedForParameters + 1;

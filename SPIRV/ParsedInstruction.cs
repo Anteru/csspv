@@ -19,10 +19,9 @@ namespace SpirV
 			Operand = operand;
 		}
 
-		public T GetSingleEnumValue<T> () where T : IConvertible
+		public T GetSingleEnumValue<T> () where T : System.Enum
 		{
-			var key = ((CompoundOperandValue)Value).Values.First().Key;
-			return (T)(object)key;
+			return (T)((IValueEnumOperandValue)Value).Value.First();
 		}
 	}
 
@@ -45,17 +44,62 @@ namespace SpirV
 		public IReadOnlyList<object> Values {get;}
 	}
 
-	public class CompoundOperandValue
+	public interface IEnumOperandValue
 	{
-		public CompoundOperandValue (System.Type enumerationType,
-		 Dictionary<uint, object> values)
-		{
+		System.Type EnumerationType { get; }
+	}
 
-			Values = values;
-			EnumerationType = enumerationType;
+	public interface IBitEnumOperandValue : IEnumOperandValue
+	{
+		IReadOnlyDictionary<uint, List<object>> Values { get; }
+	}
+
+	public interface IValueEnumOperandValue : IEnumOperandValue
+	{
+		uint Enumerand { get; }
+		List<object> Value { get; }
+	}
+
+	public class ValueEnumOperandValue<T> : IValueEnumOperandValue where T : System.Enum
+	{
+		public System.Type EnumerationType { get { return typeof(T); } }
+
+		public uint Enumerand { get { return (uint)(object)key_; } }
+		public List<object> Value { get; }
+
+		private T key_ = default;
+
+		public ValueEnumOperandValue (T key, List<object> value)
+		{
+			key_ = key;
+			Value = value;
 		}
 
-		public System.Type EnumerationType {get;}
+		public override string ToString()
+		{
+			var sb = new StringBuilder();
+
+			sb.Append(key_);
+			var valueList = Value as IList<object>;
+			if (valueList != null && valueList.Count > 0)
+			{
+				sb.Append(" ");
+				sb.AppendJoin(" ", valueList.Select(x => ParsedInstruction.OperandValueToString(x)));
+			}
+
+			return sb.ToString();
+		}
+	}
+
+	public class BitEnumOperandValue<T> : IEnumOperandValue where T : System.Enum
+	{
+		public IReadOnlyDictionary<uint, List<object>> Values { get; }
+		public System.Type EnumerationType { get { return typeof(T); } }
+
+		public BitEnumOperandValue (Dictionary<uint, List<object>> values)
+		{
+			Values = values;
+		}
 
 		public override string ToString()
 		{
@@ -74,8 +118,6 @@ namespace SpirV
 
 			return sb.ToString ();
 		}
-
-		public IReadOnlyDictionary<uint, object> Values;
 	}
 
 	public class ModuleObject
@@ -105,8 +147,8 @@ namespace SpirV
 		}
 	}
 
-    public class ParsedInstruction
-    {
+	public class ParsedInstruction
+	{
 		public IList<uint> Words { get; }
 
 		public Instruction Instruction { get; }
@@ -222,5 +264,5 @@ namespace SpirV
 
 			return sb.ToString ();
 		}
-    }
+	}
 }
