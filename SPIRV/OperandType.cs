@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Reflection;
 
 namespace SpirV
 {
@@ -92,25 +93,30 @@ namespace SpirV
 		public virtual IList<OperandType> OperandTypes { get; }
 	}
 
-	public abstract class Enum : OperandType
+	public class ParameterFactory
 	{
-		public virtual Parameter CreateParameter (uint value) => null;
-		public virtual bool IsBitEnumeration { get; }
+		public virtual Parameter CreateParameter(object value) => null;
+	}
 
-		public virtual System.Type EnumerationType { get; }
+	public class EnumType<T> : EnumType<T, ParameterFactory> where T : System.Enum { };
+
+	public class EnumType<T, U> : OperandType where T : System.Enum where U : ParameterFactory, new ()
+	{
+		private U parameterFactory_ = new U();
+		public virtual System.Type EnumerationType { get { return typeof(T); } }
 
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
 			var wordsUsedForParameters = 0;
 
-			if (IsBitEnumeration) {
+			if (typeof(T).GetCustomAttributes<FlagsAttribute> ().Any ()) {
 				var result = new Dictionary<uint, object> ();
 				foreach (var enumValue in EnumerationType.GetEnumValues()) {
 					var bit = (uint)enumValue;
 
 					// bit == 0 and words [0] == 0 handles the 0x0 = None cases
 					if ((words [0] & bit) != 0 || (bit == 0 && words[0] == 0)) {
-						var p = CreateParameter (bit);
+						var p = parameterFactory_.CreateParameter (bit);
 
 						var resultItems = new List<object> ();
 
@@ -133,7 +139,7 @@ namespace SpirV
 				var result = new Dictionary<uint, object> ();
 
 				var resultItems = new List<object> ();
-				var p = CreateParameter (words [0]);
+				var p = parameterFactory_.CreateParameter(words [0]);
 				if (p != null) {
 					for (int j = 0; j < p.OperandTypes.Count; ++j) {
 						p.OperandTypes [j].ReadValue (
@@ -159,7 +165,7 @@ namespace SpirV
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			value = (Scope.Values)words [0];
+			value = (Scope)words [0];
 			wordsUsed = 1;
 
 			return true;
@@ -170,7 +176,7 @@ namespace SpirV
 	{
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{
-			value = (MemorySemantics.Values)words [0];
+			value = (MemorySemantics)words [0];
 			wordsUsed = 1;
 
 			return true;

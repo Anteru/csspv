@@ -3,6 +3,1287 @@ using System.Collections.Generic;
 
 namespace SpirV
 {
+    [Flags]
+    public enum ImageOperands : uint
+    {
+        None = 0,
+        Bias = 1,
+        Lod = 2,
+        Grad = 4,
+        ConstOffset = 8,
+        Offset = 16,
+        ConstOffsets = 32,
+        Sample = 64,
+        MinLod = 128,
+    }
+    public class ImageOperandsParameterFactory : ParameterFactory
+    {
+        public class BiasParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class LodParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class GradParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), new IdRef(), };
+        }
+
+        public class ConstOffsetParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class OffsetParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class ConstOffsetsParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class SampleParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class MinLodParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public override Parameter CreateParameter(object value)
+        {
+            switch ((ImageOperands)value)
+            {
+                case ImageOperands.Bias:
+                    return new BiasParameter();
+                case ImageOperands.Lod:
+                    return new LodParameter();
+                case ImageOperands.Grad:
+                    return new GradParameter();
+                case ImageOperands.ConstOffset:
+                    return new ConstOffsetParameter();
+                case ImageOperands.Offset:
+                    return new OffsetParameter();
+                case ImageOperands.ConstOffsets:
+                    return new ConstOffsetsParameter();
+                case ImageOperands.Sample:
+                    return new SampleParameter();
+                case ImageOperands.MinLod:
+                    return new MinLodParameter();
+            }
+
+            return null;
+        }
+    }
+    [Flags]
+    public enum FPFastMathMode : uint
+    {
+        None = 0,
+        NotNaN = 1,
+        NotInf = 2,
+        NSZ = 4,
+        AllowRecip = 8,
+        Fast = 16,
+    }
+    [Flags]
+    public enum SelectionControl : uint
+    {
+        None = 0,
+        Flatten = 1,
+        DontFlatten = 2,
+    }
+    [Flags]
+    public enum LoopControl : uint
+    {
+        None = 0,
+        Unroll = 1,
+        DontUnroll = 2,
+        DependencyInfinite = 4,
+        DependencyLength = 8,
+    }
+    public class LoopControlParameterFactory : ParameterFactory
+    {
+        public class DependencyLengthParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public override Parameter CreateParameter(object value)
+        {
+            switch ((LoopControl)value)
+            {
+                case LoopControl.DependencyLength:
+                    return new DependencyLengthParameter();
+            }
+
+            return null;
+        }
+    }
+    [Flags]
+    public enum FunctionControl : uint
+    {
+        None = 0,
+        Inline = 1,
+        DontInline = 2,
+        Pure = 4,
+        Const = 8,
+    }
+    [Flags]
+    public enum MemorySemantics : uint
+    {
+        Relaxed = 0,
+        None = 0,
+        Acquire = 2,
+        Release = 4,
+        AcquireRelease = 8,
+        SequentiallyConsistent = 16,
+        UniformMemory = 64,
+        SubgroupMemory = 128,
+        WorkgroupMemory = 256,
+        CrossWorkgroupMemory = 512,
+        AtomicCounterMemory = 1024,
+        ImageMemory = 2048,
+    }
+    [Flags]
+    public enum MemoryAccess : uint
+    {
+        None = 0,
+        Volatile = 1,
+        Aligned = 2,
+        Nontemporal = 4,
+    }
+    public class MemoryAccessParameterFactory : ParameterFactory
+    {
+        public class AlignedParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public override Parameter CreateParameter(object value)
+        {
+            switch ((MemoryAccess)value)
+            {
+                case MemoryAccess.Aligned:
+                    return new AlignedParameter();
+            }
+
+            return null;
+        }
+    }
+    [Flags]
+    public enum KernelProfilingInfo : uint
+    {
+        None = 0,
+        CmdExecTime = 1,
+    }
+    public enum SourceLanguage : uint
+    {
+        Unknown = 0,
+        ESSL = 1,
+        GLSL = 2,
+        OpenCL_C = 3,
+        OpenCL_CPP = 4,
+        HLSL = 5,
+    }
+    public enum ExecutionModel : uint
+    {
+        Vertex = 0,
+        TessellationControl = 1,
+        TessellationEvaluation = 2,
+        Geometry = 3,
+        Fragment = 4,
+        GLCompute = 5,
+        Kernel = 6,
+    }
+    public enum AddressingModel : uint
+    {
+        Logical = 0,
+        Physical32 = 1,
+        Physical64 = 2,
+    }
+    public enum MemoryModel : uint
+    {
+        Simple = 0,
+        GLSL450 = 1,
+        OpenCL = 2,
+    }
+    public enum ExecutionMode : uint
+    {
+        Invocations = 0,
+        SpacingEqual = 1,
+        SpacingFractionalEven = 2,
+        SpacingFractionalOdd = 3,
+        VertexOrderCw = 4,
+        VertexOrderCcw = 5,
+        PixelCenterInteger = 6,
+        OriginUpperLeft = 7,
+        OriginLowerLeft = 8,
+        EarlyFragmentTests = 9,
+        PointMode = 10,
+        Xfb = 11,
+        DepthReplacing = 12,
+        DepthGreater = 14,
+        DepthLess = 15,
+        DepthUnchanged = 16,
+        LocalSize = 17,
+        LocalSizeHint = 18,
+        InputPoints = 19,
+        InputLines = 20,
+        InputLinesAdjacency = 21,
+        Triangles = 22,
+        InputTrianglesAdjacency = 23,
+        Quads = 24,
+        Isolines = 25,
+        OutputVertices = 26,
+        OutputPoints = 27,
+        OutputLineStrip = 28,
+        OutputTriangleStrip = 29,
+        VecTypeHint = 30,
+        ContractionOff = 31,
+        Initializer = 33,
+        Finalizer = 34,
+        SubgroupSize = 35,
+        SubgroupsPerWorkgroup = 36,
+        SubgroupsPerWorkgroupId = 37,
+        LocalSizeId = 38,
+        LocalSizeHintId = 39,
+        PostDepthCoverage = 4446,
+        StencilRefReplacingEXT = 5027,
+    }
+    public class ExecutionModeParameterFactory : ParameterFactory
+    {
+        public class InvocationsParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class LocalSizeParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
+        }
+
+        public class LocalSizeHintParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
+        }
+
+        public class OutputVerticesParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class VecTypeHintParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class SubgroupSizeParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class SubgroupsPerWorkgroupParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class SubgroupsPerWorkgroupIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class LocalSizeIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), new IdRef(), new IdRef(), };
+        }
+
+        public class LocalSizeHintIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public override Parameter CreateParameter(object value)
+        {
+            switch ((ExecutionMode)value)
+            {
+                case ExecutionMode.Invocations:
+                    return new InvocationsParameter();
+                case ExecutionMode.LocalSize:
+                    return new LocalSizeParameter();
+                case ExecutionMode.LocalSizeHint:
+                    return new LocalSizeHintParameter();
+                case ExecutionMode.OutputVertices:
+                    return new OutputVerticesParameter();
+                case ExecutionMode.VecTypeHint:
+                    return new VecTypeHintParameter();
+                case ExecutionMode.SubgroupSize:
+                    return new SubgroupSizeParameter();
+                case ExecutionMode.SubgroupsPerWorkgroup:
+                    return new SubgroupsPerWorkgroupParameter();
+                case ExecutionMode.SubgroupsPerWorkgroupId:
+                    return new SubgroupsPerWorkgroupIdParameter();
+                case ExecutionMode.LocalSizeId:
+                    return new LocalSizeIdParameter();
+                case ExecutionMode.LocalSizeHintId:
+                    return new LocalSizeHintIdParameter();
+            }
+
+            return null;
+        }
+    }
+    public enum StorageClass : uint
+    {
+        UniformConstant = 0,
+        Input = 1,
+        Uniform = 2,
+        Output = 3,
+        Workgroup = 4,
+        CrossWorkgroup = 5,
+        Private = 6,
+        Function = 7,
+        Generic = 8,
+        PushConstant = 9,
+        AtomicCounter = 10,
+        Image = 11,
+        StorageBuffer = 12,
+    }
+    public enum Dim : uint
+    {
+        Dim1D = 0,
+        Dim2D = 1,
+        Dim3D = 2,
+        Cube = 3,
+        Rect = 4,
+        Buffer = 5,
+        SubpassData = 6,
+    }
+    public enum SamplerAddressingMode : uint
+    {
+        None = 0,
+        ClampToEdge = 1,
+        Clamp = 2,
+        Repeat = 3,
+        RepeatMirrored = 4,
+    }
+    public enum SamplerFilterMode : uint
+    {
+        Nearest = 0,
+        Linear = 1,
+    }
+    public enum ImageFormat : uint
+    {
+        Unknown = 0,
+        Rgba32f = 1,
+        Rgba16f = 2,
+        R32f = 3,
+        Rgba8 = 4,
+        Rgba8Snorm = 5,
+        Rg32f = 6,
+        Rg16f = 7,
+        R11fG11fB10f = 8,
+        R16f = 9,
+        Rgba16 = 10,
+        Rgb10A2 = 11,
+        Rg16 = 12,
+        Rg8 = 13,
+        R16 = 14,
+        R8 = 15,
+        Rgba16Snorm = 16,
+        Rg16Snorm = 17,
+        Rg8Snorm = 18,
+        R16Snorm = 19,
+        R8Snorm = 20,
+        Rgba32i = 21,
+        Rgba16i = 22,
+        Rgba8i = 23,
+        R32i = 24,
+        Rg32i = 25,
+        Rg16i = 26,
+        Rg8i = 27,
+        R16i = 28,
+        R8i = 29,
+        Rgba32ui = 30,
+        Rgba16ui = 31,
+        Rgba8ui = 32,
+        R32ui = 33,
+        Rgb10a2ui = 34,
+        Rg32ui = 35,
+        Rg16ui = 36,
+        Rg8ui = 37,
+        R16ui = 38,
+        R8ui = 39,
+    }
+    public enum ImageChannelOrder : uint
+    {
+        R = 0,
+        A = 1,
+        RG = 2,
+        RA = 3,
+        RGB = 4,
+        RGBA = 5,
+        BGRA = 6,
+        ARGB = 7,
+        Intensity = 8,
+        Luminance = 9,
+        Rx = 10,
+        RGx = 11,
+        RGBx = 12,
+        Depth = 13,
+        DepthStencil = 14,
+        sRGB = 15,
+        sRGBx = 16,
+        sRGBA = 17,
+        sBGRA = 18,
+        ABGR = 19,
+    }
+    public enum ImageChannelDataType : uint
+    {
+        SnormInt8 = 0,
+        SnormInt16 = 1,
+        UnormInt8 = 2,
+        UnormInt16 = 3,
+        UnormShort565 = 4,
+        UnormShort555 = 5,
+        UnormInt101010 = 6,
+        SignedInt8 = 7,
+        SignedInt16 = 8,
+        SignedInt32 = 9,
+        UnsignedInt8 = 10,
+        UnsignedInt16 = 11,
+        UnsignedInt32 = 12,
+        HalfFloat = 13,
+        Float = 14,
+        UnormInt24 = 15,
+        UnormInt101010_2 = 16,
+    }
+    public enum FPRoundingMode : uint
+    {
+        RTE = 0,
+        RTZ = 1,
+        RTP = 2,
+        RTN = 3,
+    }
+    public enum LinkageType : uint
+    {
+        Export = 0,
+        Import = 1,
+    }
+    public enum AccessQualifier : uint
+    {
+        ReadOnly = 0,
+        WriteOnly = 1,
+        ReadWrite = 2,
+    }
+    public enum FunctionParameterAttribute : uint
+    {
+        Zext = 0,
+        Sext = 1,
+        ByVal = 2,
+        Sret = 3,
+        NoAlias = 4,
+        NoCapture = 5,
+        NoWrite = 6,
+        NoReadWrite = 7,
+    }
+    public enum Decoration : uint
+    {
+        RelaxedPrecision = 0,
+        SpecId = 1,
+        Block = 2,
+        BufferBlock = 3,
+        RowMajor = 4,
+        ColMajor = 5,
+        ArrayStride = 6,
+        MatrixStride = 7,
+        GLSLShared = 8,
+        GLSLPacked = 9,
+        CPacked = 10,
+        BuiltIn = 11,
+        NoPerspective = 13,
+        Flat = 14,
+        Patch = 15,
+        Centroid = 16,
+        Sample = 17,
+        Invariant = 18,
+        Restrict = 19,
+        Aliased = 20,
+        Volatile = 21,
+        Constant = 22,
+        Coherent = 23,
+        NonWritable = 24,
+        NonReadable = 25,
+        Uniform = 26,
+        SaturatedConversion = 28,
+        Stream = 29,
+        Location = 30,
+        Component = 31,
+        Index = 32,
+        Binding = 33,
+        DescriptorSet = 34,
+        Offset = 35,
+        XfbBuffer = 36,
+        XfbStride = 37,
+        FuncParamAttr = 38,
+        FPRoundingMode = 39,
+        FPFastMathMode = 40,
+        LinkageAttributes = 41,
+        NoContraction = 42,
+        InputAttachmentIndex = 43,
+        Alignment = 44,
+        MaxByteOffset = 45,
+        AlignmentId = 46,
+        MaxByteOffsetId = 47,
+        ExplicitInterpAMD = 4999,
+        OverrideCoverageNV = 5248,
+        PassthroughNV = 5250,
+        ViewportRelativeNV = 5252,
+        SecondaryViewportRelativeNV = 5256,
+    }
+    public class DecorationParameterFactory : ParameterFactory
+    {
+        public class SpecIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class ArrayStrideParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class MatrixStrideParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class BuiltInParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new EnumType<BuiltIn>(), };
+        }
+
+        public class StreamParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class LocationParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class ComponentParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class IndexParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class BindingParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class DescriptorSetParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class OffsetParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class XfbBufferParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class XfbStrideParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class FuncParamAttrParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new EnumType<FunctionParameterAttribute>(), };
+        }
+
+        public class FPRoundingModeParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new EnumType<FPRoundingMode>(), };
+        }
+
+        public class FPFastMathModeParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new EnumType<FPFastMathMode>(), };
+        }
+
+        public class LinkageAttributesParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralString(), new EnumType<LinkageType>(), };
+        }
+
+        public class InputAttachmentIndexParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class AlignmentParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class MaxByteOffsetParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public class AlignmentIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class MaxByteOffsetIdParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new IdRef(), };
+        }
+
+        public class SecondaryViewportRelativeNVParameter : Parameter
+        {
+            public override IList<OperandType> OperandTypes
+            {
+                get
+                {
+                    return OperandTypes_;
+                }
+            }
+
+            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
+        {new LiteralInteger(), };
+        }
+
+        public override Parameter CreateParameter(object value)
+        {
+            switch ((Decoration)value)
+            {
+                case Decoration.SpecId:
+                    return new SpecIdParameter();
+                case Decoration.ArrayStride:
+                    return new ArrayStrideParameter();
+                case Decoration.MatrixStride:
+                    return new MatrixStrideParameter();
+                case Decoration.BuiltIn:
+                    return new BuiltInParameter();
+                case Decoration.Stream:
+                    return new StreamParameter();
+                case Decoration.Location:
+                    return new LocationParameter();
+                case Decoration.Component:
+                    return new ComponentParameter();
+                case Decoration.Index:
+                    return new IndexParameter();
+                case Decoration.Binding:
+                    return new BindingParameter();
+                case Decoration.DescriptorSet:
+                    return new DescriptorSetParameter();
+                case Decoration.Offset:
+                    return new OffsetParameter();
+                case Decoration.XfbBuffer:
+                    return new XfbBufferParameter();
+                case Decoration.XfbStride:
+                    return new XfbStrideParameter();
+                case Decoration.FuncParamAttr:
+                    return new FuncParamAttrParameter();
+                case Decoration.FPRoundingMode:
+                    return new FPRoundingModeParameter();
+                case Decoration.FPFastMathMode:
+                    return new FPFastMathModeParameter();
+                case Decoration.LinkageAttributes:
+                    return new LinkageAttributesParameter();
+                case Decoration.InputAttachmentIndex:
+                    return new InputAttachmentIndexParameter();
+                case Decoration.Alignment:
+                    return new AlignmentParameter();
+                case Decoration.MaxByteOffset:
+                    return new MaxByteOffsetParameter();
+                case Decoration.AlignmentId:
+                    return new AlignmentIdParameter();
+                case Decoration.MaxByteOffsetId:
+                    return new MaxByteOffsetIdParameter();
+                case Decoration.SecondaryViewportRelativeNV:
+                    return new SecondaryViewportRelativeNVParameter();
+            }
+
+            return null;
+        }
+    }
+    public enum BuiltIn : uint
+    {
+        Position = 0,
+        PointSize = 1,
+        ClipDistance = 3,
+        CullDistance = 4,
+        VertexId = 5,
+        InstanceId = 6,
+        PrimitiveId = 7,
+        InvocationId = 8,
+        Layer = 9,
+        ViewportIndex = 10,
+        TessLevelOuter = 11,
+        TessLevelInner = 12,
+        TessCoord = 13,
+        PatchVertices = 14,
+        FragCoord = 15,
+        PointCoord = 16,
+        FrontFacing = 17,
+        SampleId = 18,
+        SamplePosition = 19,
+        SampleMask = 20,
+        FragDepth = 22,
+        HelperInvocation = 23,
+        NumWorkgroups = 24,
+        WorkgroupSize = 25,
+        WorkgroupId = 26,
+        LocalInvocationId = 27,
+        GlobalInvocationId = 28,
+        LocalInvocationIndex = 29,
+        WorkDim = 30,
+        GlobalSize = 31,
+        EnqueuedWorkgroupSize = 32,
+        GlobalOffset = 33,
+        GlobalLinearId = 34,
+        SubgroupSize = 36,
+        SubgroupMaxSize = 37,
+        NumSubgroups = 38,
+        NumEnqueuedSubgroups = 39,
+        SubgroupId = 40,
+        SubgroupLocalInvocationId = 41,
+        VertexIndex = 42,
+        InstanceIndex = 43,
+        SubgroupEqMaskKHR = 4416,
+        SubgroupGeMaskKHR = 4417,
+        SubgroupGtMaskKHR = 4418,
+        SubgroupLeMaskKHR = 4419,
+        SubgroupLtMaskKHR = 4420,
+        BaseVertex = 4424,
+        BaseInstance = 4425,
+        DrawIndex = 4426,
+        DeviceIndex = 4438,
+        ViewIndex = 4440,
+        BaryCoordNoPerspAMD = 4992,
+        BaryCoordNoPerspCentroidAMD = 4993,
+        BaryCoordNoPerspSampleAMD = 4994,
+        BaryCoordSmoothAMD = 4995,
+        BaryCoordSmoothCentroidAMD = 4996,
+        BaryCoordSmoothSampleAMD = 4997,
+        BaryCoordPullModelAMD = 4998,
+        FragStencilRefEXT = 5014,
+        ViewportMaskNV = 5253,
+        SecondaryPositionNV = 5257,
+        SecondaryViewportMaskNV = 5258,
+        PositionPerViewNV = 5261,
+        ViewportMaskPerViewNV = 5262,
+    }
+    public enum Scope : uint
+    {
+        CrossDevice = 0,
+        Device = 1,
+        Workgroup = 2,
+        Subgroup = 3,
+        Invocation = 4,
+    }
+    public enum GroupOperation : uint
+    {
+        Reduce = 0,
+        InclusiveScan = 1,
+        ExclusiveScan = 2,
+    }
+    public enum KernelEnqueueFlags : uint
+    {
+        NoWait = 0,
+        WaitKernel = 1,
+        WaitWorkGroup = 2,
+    }
+    public enum Capability : uint
+    {
+        Matrix = 0,
+        Shader = 1,
+        Geometry = 2,
+        Tessellation = 3,
+        Addresses = 4,
+        Linkage = 5,
+        Kernel = 6,
+        Vector16 = 7,
+        Float16Buffer = 8,
+        Float16 = 9,
+        Float64 = 10,
+        Int64 = 11,
+        Int64Atomics = 12,
+        ImageBasic = 13,
+        ImageReadWrite = 14,
+        ImageMipmap = 15,
+        Pipes = 17,
+        Groups = 18,
+        DeviceEnqueue = 19,
+        LiteralSampler = 20,
+        AtomicStorage = 21,
+        Int16 = 22,
+        TessellationPointSize = 23,
+        GeometryPointSize = 24,
+        ImageGatherExtended = 25,
+        StorageImageMultisample = 27,
+        UniformBufferArrayDynamicIndexing = 28,
+        SampledImageArrayDynamicIndexing = 29,
+        StorageBufferArrayDynamicIndexing = 30,
+        StorageImageArrayDynamicIndexing = 31,
+        ClipDistance = 32,
+        CullDistance = 33,
+        ImageCubeArray = 34,
+        SampleRateShading = 35,
+        ImageRect = 36,
+        SampledRect = 37,
+        GenericPointer = 38,
+        Int8 = 39,
+        InputAttachment = 40,
+        SparseResidency = 41,
+        MinLod = 42,
+        Sampled1D = 43,
+        Image1D = 44,
+        SampledCubeArray = 45,
+        SampledBuffer = 46,
+        ImageBuffer = 47,
+        ImageMSArray = 48,
+        StorageImageExtendedFormats = 49,
+        ImageQuery = 50,
+        DerivativeControl = 51,
+        InterpolationFunction = 52,
+        TransformFeedback = 53,
+        GeometryStreams = 54,
+        StorageImageReadWithoutFormat = 55,
+        StorageImageWriteWithoutFormat = 56,
+        MultiViewport = 57,
+        SubgroupDispatch = 58,
+        NamedBarrier = 59,
+        PipeStorage = 60,
+        SubgroupBallotKHR = 4423,
+        DrawParameters = 4427,
+        SubgroupVoteKHR = 4431,
+        StorageBuffer16BitAccess = 4433,
+        StorageUniformBufferBlock16 = 4433,
+        UniformAndStorageBuffer16BitAccess = 4434,
+        StorageUniform16 = 4434,
+        StoragePushConstant16 = 4435,
+        StorageInputOutput16 = 4436,
+        DeviceGroup = 4437,
+        MultiView = 4439,
+        VariablePointersStorageBuffer = 4441,
+        VariablePointers = 4442,
+        AtomicStorageOps = 4445,
+        SampleMaskPostDepthCoverage = 4447,
+        ImageGatherBiasLodAMD = 5009,
+        FragmentMaskAMD = 5010,
+        StencilExportEXT = 5013,
+        ImageReadWriteLodAMD = 5015,
+        SampleMaskOverrideCoverageNV = 5249,
+        GeometryShaderPassthroughNV = 5251,
+        ShaderViewportIndexLayerEXT = 5254,
+        ShaderViewportIndexLayerNV = 5254,
+        ShaderViewportMaskNV = 5255,
+        ShaderStereoViewNV = 5259,
+        PerViewAttributesNV = 5260,
+        SubgroupShuffleINTEL = 5568,
+        SubgroupBufferBlockIOINTEL = 5569,
+        SubgroupImageBlockIOINTEL = 5570,
+    }
     public class OpNop : Instruction
     {
         public OpNop() : base("OpNop")
@@ -26,7 +1307,7 @@ namespace SpirV
     public class OpSource : Instruction
     {
         public OpSource() : base("OpSource", new List<Operand>()
-    {new Operand(new SourceLanguage(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Version", OperandQuantifier.Default), new Operand(new IdRef(), "File", OperandQuantifier.Optional), new Operand(new LiteralString(), "Source", OperandQuantifier.Optional), })
+    {new Operand(new EnumType<SourceLanguage>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Version", OperandQuantifier.Default), new Operand(new IdRef(), "File", OperandQuantifier.Optional), new Operand(new LiteralString(), "Source", OperandQuantifier.Optional), })
         {
         }
     }
@@ -89,28 +1370,28 @@ namespace SpirV
     public class OpMemoryModel : Instruction
     {
         public OpMemoryModel() : base("OpMemoryModel", new List<Operand>()
-    {new Operand(new AddressingModel(), null, OperandQuantifier.Default), new Operand(new MemoryModel(), null, OperandQuantifier.Default), })
+    {new Operand(new EnumType<AddressingModel>(), null, OperandQuantifier.Default), new Operand(new EnumType<MemoryModel>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpEntryPoint : Instruction
     {
         public OpEntryPoint() : base("OpEntryPoint", new List<Operand>()
-    {new Operand(new ExecutionModel(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new LiteralString(), "Name", OperandQuantifier.Default), new Operand(new IdRef(), "Interface", OperandQuantifier.Varying), })
+    {new Operand(new EnumType<ExecutionModel>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new LiteralString(), "Name", OperandQuantifier.Default), new Operand(new IdRef(), "Interface", OperandQuantifier.Varying), })
         {
         }
     }
     public class OpExecutionMode : Instruction
     {
         public OpExecutionMode() : base("OpExecutionMode", new List<Operand>()
-    {new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new ExecutionMode(), "Mode", OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new EnumType<ExecutionMode, ExecutionModeParameterFactory>(), "Mode", OperandQuantifier.Default), })
         {
         }
     }
     public class OpCapability : Instruction
     {
         public OpCapability() : base("OpCapability", new List<Operand>()
-    {new Operand(new Capability(), "Capability", OperandQuantifier.Default), })
+    {new Operand(new EnumType<Capability>(), "Capability", OperandQuantifier.Default), })
         {
         }
     }
@@ -159,7 +1440,7 @@ namespace SpirV
     public class OpTypeImage : Instruction
     {
         public OpTypeImage() : base("OpTypeImage", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Type", OperandQuantifier.Default), new Operand(new Dim(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Depth", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Arrayed", OperandQuantifier.Default), new Operand(new LiteralInteger(), "MS", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Sampled", OperandQuantifier.Default), new Operand(new ImageFormat(), null, OperandQuantifier.Default), new Operand(new AccessQualifier(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Type", OperandQuantifier.Default), new Operand(new EnumType<Dim>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Depth", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Arrayed", OperandQuantifier.Default), new Operand(new LiteralInteger(), "MS", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Sampled", OperandQuantifier.Default), new Operand(new EnumType<ImageFormat>(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -208,7 +1489,7 @@ namespace SpirV
     public class OpTypePointer : Instruction
     {
         public OpTypePointer() : base("OpTypePointer", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new StorageClass(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Type", OperandQuantifier.Default), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Type", OperandQuantifier.Default), })
         {
         }
     }
@@ -250,14 +1531,14 @@ namespace SpirV
     public class OpTypePipe : Instruction
     {
         public OpTypePipe() : base("OpTypePipe", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new AccessQualifier(), "Qualifier", OperandQuantifier.Default), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier>(), "Qualifier", OperandQuantifier.Default), })
         {
         }
     }
     public class OpTypeForwardPointer : Instruction
     {
         public OpTypeForwardPointer() : base("OpTypeForwardPointer", new List<Operand>()
-    {new Operand(new IdRef(), "Pointer Type", OperandQuantifier.Default), new Operand(new StorageClass(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Pointer Type", OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -292,7 +1573,7 @@ namespace SpirV
     public class OpConstantSampler : Instruction
     {
         public OpConstantSampler() : base("OpConstantSampler", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new SamplerAddressingMode(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Param", OperandQuantifier.Default), new Operand(new SamplerFilterMode(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<SamplerAddressingMode>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Param", OperandQuantifier.Default), new Operand(new EnumType<SamplerFilterMode>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -341,7 +1622,7 @@ namespace SpirV
     public class OpFunction : Instruction
     {
         public OpFunction() : base("OpFunction", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new FunctionControl(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Function Type", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<FunctionControl>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Function Type", OperandQuantifier.Default), })
         {
         }
     }
@@ -368,7 +1649,7 @@ namespace SpirV
     public class OpVariable : Instruction
     {
         public OpVariable() : base("OpVariable", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new StorageClass(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Initializer", OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Initializer", OperandQuantifier.Optional), })
         {
         }
     }
@@ -382,28 +1663,28 @@ namespace SpirV
     public class OpLoad : Instruction
     {
         public OpLoad() : base("OpLoad", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new MemoryAccess(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new EnumType<MemoryAccess, MemoryAccessParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpStore : Instruction
     {
         public OpStore() : base("OpStore", new List<Operand>()
-    {new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new IdRef(), "Object", OperandQuantifier.Default), new Operand(new MemoryAccess(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new IdRef(), "Object", OperandQuantifier.Default), new Operand(new EnumType<MemoryAccess, MemoryAccessParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpCopyMemory : Instruction
     {
         public OpCopyMemory() : base("OpCopyMemory", new List<Operand>()
-    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new IdRef(), "Source", OperandQuantifier.Default), new Operand(new MemoryAccess(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new IdRef(), "Source", OperandQuantifier.Default), new Operand(new EnumType<MemoryAccess, MemoryAccessParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpCopyMemorySized : Instruction
     {
         public OpCopyMemorySized() : base("OpCopyMemorySized", new List<Operand>()
-    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new IdRef(), "Source", OperandQuantifier.Default), new Operand(new IdRef(), "Size", OperandQuantifier.Default), new Operand(new MemoryAccess(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new IdRef(), "Source", OperandQuantifier.Default), new Operand(new IdRef(), "Size", OperandQuantifier.Default), new Operand(new EnumType<MemoryAccess, MemoryAccessParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -452,14 +1733,14 @@ namespace SpirV
     public class OpDecorate : Instruction
     {
         public OpDecorate() : base("OpDecorate", new List<Operand>()
-    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new Decoration(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new EnumType<Decoration, DecorationParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpMemberDecorate : Instruction
     {
         public OpMemberDecorate() : base("OpMemberDecorate", new List<Operand>()
-    {new Operand(new IdRef(), "Structure Type", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Member", OperandQuantifier.Default), new Operand(new Decoration(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Structure Type", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Member", OperandQuantifier.Default), new Operand(new EnumType<Decoration, DecorationParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -550,91 +1831,91 @@ namespace SpirV
     public class OpImageSampleImplicitLod : Instruction
     {
         public OpImageSampleImplicitLod() : base("OpImageSampleImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSampleExplicitLod : Instruction
     {
         public OpImageSampleExplicitLod() : base("OpImageSampleExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSampleDrefImplicitLod : Instruction
     {
         public OpImageSampleDrefImplicitLod() : base("OpImageSampleDrefImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSampleDrefExplicitLod : Instruction
     {
         public OpImageSampleDrefExplicitLod() : base("OpImageSampleDrefExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSampleProjImplicitLod : Instruction
     {
         public OpImageSampleProjImplicitLod() : base("OpImageSampleProjImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSampleProjExplicitLod : Instruction
     {
         public OpImageSampleProjExplicitLod() : base("OpImageSampleProjExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSampleProjDrefImplicitLod : Instruction
     {
         public OpImageSampleProjDrefImplicitLod() : base("OpImageSampleProjDrefImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSampleProjDrefExplicitLod : Instruction
     {
         public OpImageSampleProjDrefExplicitLod() : base("OpImageSampleProjDrefExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageFetch : Instruction
     {
         public OpImageFetch() : base("OpImageFetch", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageGather : Instruction
     {
         public OpImageGather() : base("OpImageGather", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Component", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Component", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageDrefGather : Instruction
     {
         public OpImageDrefGather() : base("OpImageDrefGather", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageRead : Instruction
     {
         public OpImageRead() : base("OpImageRead", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageWrite : Instruction
     {
         public OpImageWrite() : base("OpImageWrite", new List<Operand>()
-    {new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Texel", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Texel", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -795,7 +2076,7 @@ namespace SpirV
     public class OpGenericCastToPtrExplicit : Instruction
     {
         public OpGenericCastToPtrExplicit() : base("OpGenericCastToPtrExplicit", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new StorageClass(), "Storage", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), "Storage", OperandQuantifier.Default), })
         {
         }
     }
@@ -1570,14 +2851,14 @@ namespace SpirV
     public class OpLoopMerge : Instruction
     {
         public OpLoopMerge() : base("OpLoopMerge", new List<Operand>()
-    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new IdRef(), "Continue Target", OperandQuantifier.Default), new Operand(new LoopControl(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new IdRef(), "Continue Target", OperandQuantifier.Default), new Operand(new EnumType<LoopControl, LoopControlParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpSelectionMerge : Instruction
     {
         public OpSelectionMerge() : base("OpSelectionMerge", new List<Operand>()
-    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new SelectionControl(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new EnumType<SelectionControl>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -1686,56 +2967,56 @@ namespace SpirV
     public class OpGroupIAdd : Instruction
     {
         public OpGroupIAdd() : base("OpGroupIAdd", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFAdd : Instruction
     {
         public OpGroupFAdd() : base("OpGroupFAdd", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMin : Instruction
     {
         public OpGroupFMin() : base("OpGroupFMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMin : Instruction
     {
         public OpGroupUMin() : base("OpGroupUMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMin : Instruction
     {
         public OpGroupSMin() : base("OpGroupSMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMax : Instruction
     {
         public OpGroupFMax() : base("OpGroupFMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMax : Instruction
     {
         public OpGroupUMax() : base("OpGroupUMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMax : Instruction
     {
         public OpGroupSMax() : base("OpGroupSMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
@@ -1945,77 +3226,77 @@ namespace SpirV
     public class OpImageSparseSampleImplicitLod : Instruction
     {
         public OpImageSparseSampleImplicitLod() : base("OpImageSparseSampleImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseSampleExplicitLod : Instruction
     {
         public OpImageSparseSampleExplicitLod() : base("OpImageSparseSampleExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSparseSampleDrefImplicitLod : Instruction
     {
         public OpImageSparseSampleDrefImplicitLod() : base("OpImageSparseSampleDrefImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseSampleDrefExplicitLod : Instruction
     {
         public OpImageSparseSampleDrefExplicitLod() : base("OpImageSparseSampleDrefExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSparseSampleProjImplicitLod : Instruction
     {
         public OpImageSparseSampleProjImplicitLod() : base("OpImageSparseSampleProjImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseSampleProjExplicitLod : Instruction
     {
         public OpImageSparseSampleProjExplicitLod() : base("OpImageSparseSampleProjExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSparseSampleProjDrefImplicitLod : Instruction
     {
         public OpImageSparseSampleProjDrefImplicitLod() : base("OpImageSparseSampleProjDrefImplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseSampleProjDrefExplicitLod : Instruction
     {
         public OpImageSparseSampleProjDrefExplicitLod() : base("OpImageSparseSampleProjDrefExplicitLod", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpImageSparseFetch : Instruction
     {
         public OpImageSparseFetch() : base("OpImageSparseFetch", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseGather : Instruction
     {
         public OpImageSparseGather() : base("OpImageSparseGather", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Component", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "Component", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
     public class OpImageSparseDrefGather : Instruction
     {
         public OpImageSparseDrefGather() : base("OpImageSparseDrefGather", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new IdRef(), "D~ref~", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -2049,7 +3330,7 @@ namespace SpirV
     public class OpImageSparseRead : Instruction
     {
         public OpImageSparseRead() : base("OpImageSparseRead", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new ImageOperands(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Image", OperandQuantifier.Default), new Operand(new IdRef(), "Coordinate", OperandQuantifier.Default), new Operand(new EnumType<ImageOperands, ImageOperandsParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -2126,14 +3407,14 @@ namespace SpirV
     public class OpExecutionModeId : Instruction
     {
         public OpExecutionModeId() : base("OpExecutionModeId", new List<Operand>()
-    {new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new ExecutionMode(), "Mode", OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new EnumType<ExecutionMode, ExecutionModeParameterFactory>(), "Mode", OperandQuantifier.Default), })
         {
         }
     }
     public class OpDecorateId : Instruction
     {
         public OpDecorateId() : base("OpDecorateId", new List<Operand>()
-    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new Decoration(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Target", OperandQuantifier.Default), new Operand(new EnumType<Decoration, DecorationParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -2182,56 +3463,56 @@ namespace SpirV
     public class OpGroupIAddNonUniformAMD : Instruction
     {
         public OpGroupIAddNonUniformAMD() : base("OpGroupIAddNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFAddNonUniformAMD : Instruction
     {
         public OpGroupFAddNonUniformAMD() : base("OpGroupFAddNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMinNonUniformAMD : Instruction
     {
         public OpGroupFMinNonUniformAMD() : base("OpGroupFMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMinNonUniformAMD : Instruction
     {
         public OpGroupUMinNonUniformAMD() : base("OpGroupUMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMinNonUniformAMD : Instruction
     {
         public OpGroupSMinNonUniformAMD() : base("OpGroupSMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMaxNonUniformAMD : Instruction
     {
         public OpGroupFMaxNonUniformAMD() : base("OpGroupFMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMaxNonUniformAMD : Instruction
     {
         public OpGroupUMaxNonUniformAMD() : base("OpGroupUMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMaxNonUniformAMD : Instruction
     {
         public OpGroupSMaxNonUniformAMD() : base("OpGroupSMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new GroupOperation(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
@@ -2313,1847 +3594,6 @@ namespace SpirV
             get
             {
                 return instructions_;
-            }
-        }
-    }
-    public class ImageOperands : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            Bias = 1,
-            Lod = 2,
-            Grad = 4,
-            ConstOffset = 8,
-            Offset = 16,
-            ConstOffsets = 32,
-            Sample = 64,
-            MinLod = 128,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-
-        public class BiasParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class LodParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class GradParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), new IdRef(), };
-        }
-
-        public class ConstOffsetParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class OffsetParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class ConstOffsetsParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class SampleParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class MinLodParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public override Parameter CreateParameter(uint value)
-        {
-            switch (value)
-            {
-                case (uint)Values.Bias:
-                    return new BiasParameter();
-                case (uint)Values.Lod:
-                    return new LodParameter();
-                case (uint)Values.Grad:
-                    return new GradParameter();
-                case (uint)Values.ConstOffset:
-                    return new ConstOffsetParameter();
-                case (uint)Values.Offset:
-                    return new OffsetParameter();
-                case (uint)Values.ConstOffsets:
-                    return new ConstOffsetsParameter();
-                case (uint)Values.Sample:
-                    return new SampleParameter();
-                case (uint)Values.MinLod:
-                    return new MinLodParameter();
-            }
-
-            return null;
-        }
-    }
-    public class FPFastMathMode : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            NotNaN = 1,
-            NotInf = 2,
-            NSZ = 4,
-            AllowRecip = 8,
-            Fast = 16,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class SelectionControl : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            Flatten = 1,
-            DontFlatten = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class LoopControl : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            Unroll = 1,
-            DontUnroll = 2,
-            DependencyInfinite = 4,
-            DependencyLength = 8,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-
-        public class DependencyLengthParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public override Parameter CreateParameter(uint value)
-        {
-            switch (value)
-            {
-                case (uint)Values.DependencyLength:
-                    return new DependencyLengthParameter();
-            }
-
-            return null;
-        }
-    }
-    public class FunctionControl : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            Inline = 1,
-            DontInline = 2,
-            Pure = 4,
-            Const = 8,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class MemorySemantics : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            Relaxed = 0,
-            None = 0,
-            Acquire = 2,
-            Release = 4,
-            AcquireRelease = 8,
-            SequentiallyConsistent = 16,
-            UniformMemory = 64,
-            SubgroupMemory = 128,
-            WorkgroupMemory = 256,
-            CrossWorkgroupMemory = 512,
-            AtomicCounterMemory = 1024,
-            ImageMemory = 2048,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class MemoryAccess : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            Volatile = 1,
-            Aligned = 2,
-            Nontemporal = 4,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-
-        public class AlignedParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public override Parameter CreateParameter(uint value)
-        {
-            switch (value)
-            {
-                case (uint)Values.Aligned:
-                    return new AlignedParameter();
-            }
-
-            return null;
-        }
-    }
-    public class KernelProfilingInfo : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        [Flags]
-        public enum Values : uint
-        {
-            None = 0,
-            CmdExecTime = 1,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class SourceLanguage : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Unknown = 0,
-            ESSL = 1,
-            GLSL = 2,
-            OpenCL_C = 3,
-            OpenCL_CPP = 4,
-            HLSL = 5,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class ExecutionModel : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Vertex = 0,
-            TessellationControl = 1,
-            TessellationEvaluation = 2,
-            Geometry = 3,
-            Fragment = 4,
-            GLCompute = 5,
-            Kernel = 6,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class AddressingModel : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Logical = 0,
-            Physical32 = 1,
-            Physical64 = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class MemoryModel : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Simple = 0,
-            GLSL450 = 1,
-            OpenCL = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class ExecutionMode : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Invocations = 0,
-            SpacingEqual = 1,
-            SpacingFractionalEven = 2,
-            SpacingFractionalOdd = 3,
-            VertexOrderCw = 4,
-            VertexOrderCcw = 5,
-            PixelCenterInteger = 6,
-            OriginUpperLeft = 7,
-            OriginLowerLeft = 8,
-            EarlyFragmentTests = 9,
-            PointMode = 10,
-            Xfb = 11,
-            DepthReplacing = 12,
-            DepthGreater = 14,
-            DepthLess = 15,
-            DepthUnchanged = 16,
-            LocalSize = 17,
-            LocalSizeHint = 18,
-            InputPoints = 19,
-            InputLines = 20,
-            InputLinesAdjacency = 21,
-            Triangles = 22,
-            InputTrianglesAdjacency = 23,
-            Quads = 24,
-            Isolines = 25,
-            OutputVertices = 26,
-            OutputPoints = 27,
-            OutputLineStrip = 28,
-            OutputTriangleStrip = 29,
-            VecTypeHint = 30,
-            ContractionOff = 31,
-            Initializer = 33,
-            Finalizer = 34,
-            SubgroupSize = 35,
-            SubgroupsPerWorkgroup = 36,
-            SubgroupsPerWorkgroupId = 37,
-            LocalSizeId = 38,
-            LocalSizeHintId = 39,
-            PostDepthCoverage = 4446,
-            StencilRefReplacingEXT = 5027,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-
-        public class InvocationsParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class LocalSizeParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
-        }
-
-        public class LocalSizeHintParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), new LiteralInteger(), new LiteralInteger(), };
-        }
-
-        public class OutputVerticesParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class VecTypeHintParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class SubgroupSizeParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class SubgroupsPerWorkgroupParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class SubgroupsPerWorkgroupIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class LocalSizeIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), new IdRef(), new IdRef(), };
-        }
-
-        public class LocalSizeHintIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public override Parameter CreateParameter(uint value)
-        {
-            switch (value)
-            {
-                case (uint)Values.Invocations:
-                    return new InvocationsParameter();
-                case (uint)Values.LocalSize:
-                    return new LocalSizeParameter();
-                case (uint)Values.LocalSizeHint:
-                    return new LocalSizeHintParameter();
-                case (uint)Values.OutputVertices:
-                    return new OutputVerticesParameter();
-                case (uint)Values.VecTypeHint:
-                    return new VecTypeHintParameter();
-                case (uint)Values.SubgroupSize:
-                    return new SubgroupSizeParameter();
-                case (uint)Values.SubgroupsPerWorkgroup:
-                    return new SubgroupsPerWorkgroupParameter();
-                case (uint)Values.SubgroupsPerWorkgroupId:
-                    return new SubgroupsPerWorkgroupIdParameter();
-                case (uint)Values.LocalSizeId:
-                    return new LocalSizeIdParameter();
-                case (uint)Values.LocalSizeHintId:
-                    return new LocalSizeHintIdParameter();
-            }
-
-            return null;
-        }
-    }
-    public class StorageClass : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            UniformConstant = 0,
-            Input = 1,
-            Uniform = 2,
-            Output = 3,
-            Workgroup = 4,
-            CrossWorkgroup = 5,
-            Private = 6,
-            Function = 7,
-            Generic = 8,
-            PushConstant = 9,
-            AtomicCounter = 10,
-            Image = 11,
-            StorageBuffer = 12,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class Dim : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Dim1D = 0,
-            Dim2D = 1,
-            Dim3D = 2,
-            Cube = 3,
-            Rect = 4,
-            Buffer = 5,
-            SubpassData = 6,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class SamplerAddressingMode : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            None = 0,
-            ClampToEdge = 1,
-            Clamp = 2,
-            Repeat = 3,
-            RepeatMirrored = 4,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class SamplerFilterMode : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Nearest = 0,
-            Linear = 1,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class ImageFormat : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Unknown = 0,
-            Rgba32f = 1,
-            Rgba16f = 2,
-            R32f = 3,
-            Rgba8 = 4,
-            Rgba8Snorm = 5,
-            Rg32f = 6,
-            Rg16f = 7,
-            R11fG11fB10f = 8,
-            R16f = 9,
-            Rgba16 = 10,
-            Rgb10A2 = 11,
-            Rg16 = 12,
-            Rg8 = 13,
-            R16 = 14,
-            R8 = 15,
-            Rgba16Snorm = 16,
-            Rg16Snorm = 17,
-            Rg8Snorm = 18,
-            R16Snorm = 19,
-            R8Snorm = 20,
-            Rgba32i = 21,
-            Rgba16i = 22,
-            Rgba8i = 23,
-            R32i = 24,
-            Rg32i = 25,
-            Rg16i = 26,
-            Rg8i = 27,
-            R16i = 28,
-            R8i = 29,
-            Rgba32ui = 30,
-            Rgba16ui = 31,
-            Rgba8ui = 32,
-            R32ui = 33,
-            Rgb10a2ui = 34,
-            Rg32ui = 35,
-            Rg16ui = 36,
-            Rg8ui = 37,
-            R16ui = 38,
-            R8ui = 39,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class ImageChannelOrder : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            R = 0,
-            A = 1,
-            RG = 2,
-            RA = 3,
-            RGB = 4,
-            RGBA = 5,
-            BGRA = 6,
-            ARGB = 7,
-            Intensity = 8,
-            Luminance = 9,
-            Rx = 10,
-            RGx = 11,
-            RGBx = 12,
-            Depth = 13,
-            DepthStencil = 14,
-            sRGB = 15,
-            sRGBx = 16,
-            sRGBA = 17,
-            sBGRA = 18,
-            ABGR = 19,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class ImageChannelDataType : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            SnormInt8 = 0,
-            SnormInt16 = 1,
-            UnormInt8 = 2,
-            UnormInt16 = 3,
-            UnormShort565 = 4,
-            UnormShort555 = 5,
-            UnormInt101010 = 6,
-            SignedInt8 = 7,
-            SignedInt16 = 8,
-            SignedInt32 = 9,
-            UnsignedInt8 = 10,
-            UnsignedInt16 = 11,
-            UnsignedInt32 = 12,
-            HalfFloat = 13,
-            Float = 14,
-            UnormInt24 = 15,
-            UnormInt101010_2 = 16,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class FPRoundingMode : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            RTE = 0,
-            RTZ = 1,
-            RTP = 2,
-            RTN = 3,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class LinkageType : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Export = 0,
-            Import = 1,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class AccessQualifier : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            ReadOnly = 0,
-            WriteOnly = 1,
-            ReadWrite = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class FunctionParameterAttribute : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Zext = 0,
-            Sext = 1,
-            ByVal = 2,
-            Sret = 3,
-            NoAlias = 4,
-            NoCapture = 5,
-            NoWrite = 6,
-            NoReadWrite = 7,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class Decoration : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            RelaxedPrecision = 0,
-            SpecId = 1,
-            Block = 2,
-            BufferBlock = 3,
-            RowMajor = 4,
-            ColMajor = 5,
-            ArrayStride = 6,
-            MatrixStride = 7,
-            GLSLShared = 8,
-            GLSLPacked = 9,
-            CPacked = 10,
-            BuiltIn = 11,
-            NoPerspective = 13,
-            Flat = 14,
-            Patch = 15,
-            Centroid = 16,
-            Sample = 17,
-            Invariant = 18,
-            Restrict = 19,
-            Aliased = 20,
-            Volatile = 21,
-            Constant = 22,
-            Coherent = 23,
-            NonWritable = 24,
-            NonReadable = 25,
-            Uniform = 26,
-            SaturatedConversion = 28,
-            Stream = 29,
-            Location = 30,
-            Component = 31,
-            Index = 32,
-            Binding = 33,
-            DescriptorSet = 34,
-            Offset = 35,
-            XfbBuffer = 36,
-            XfbStride = 37,
-            FuncParamAttr = 38,
-            FPRoundingMode = 39,
-            FPFastMathMode = 40,
-            LinkageAttributes = 41,
-            NoContraction = 42,
-            InputAttachmentIndex = 43,
-            Alignment = 44,
-            MaxByteOffset = 45,
-            AlignmentId = 46,
-            MaxByteOffsetId = 47,
-            ExplicitInterpAMD = 4999,
-            OverrideCoverageNV = 5248,
-            PassthroughNV = 5250,
-            ViewportRelativeNV = 5252,
-            SecondaryViewportRelativeNV = 5256,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-
-        public class SpecIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class ArrayStrideParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class MatrixStrideParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class BuiltInParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new BuiltIn(), };
-        }
-
-        public class StreamParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class LocationParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class ComponentParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class IndexParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class BindingParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class DescriptorSetParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class OffsetParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class XfbBufferParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class XfbStrideParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class FuncParamAttrParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new FunctionParameterAttribute(), };
-        }
-
-        public class FPRoundingModeParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new FPRoundingMode(), };
-        }
-
-        public class FPFastMathModeParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new FPFastMathMode(), };
-        }
-
-        public class LinkageAttributesParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralString(), new LinkageType(), };
-        }
-
-        public class InputAttachmentIndexParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class AlignmentParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class MaxByteOffsetParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public class AlignmentIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class MaxByteOffsetIdParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new IdRef(), };
-        }
-
-        public class SecondaryViewportRelativeNVParameter : Parameter
-        {
-            public override IList<OperandType> OperandTypes
-            {
-                get
-                {
-                    return OperandTypes_;
-                }
-            }
-
-            private static IList<OperandType> OperandTypes_ = new List<OperandType>()
-        {new LiteralInteger(), };
-        }
-
-        public override Parameter CreateParameter(uint value)
-        {
-            switch (value)
-            {
-                case (uint)Values.SpecId:
-                    return new SpecIdParameter();
-                case (uint)Values.ArrayStride:
-                    return new ArrayStrideParameter();
-                case (uint)Values.MatrixStride:
-                    return new MatrixStrideParameter();
-                case (uint)Values.BuiltIn:
-                    return new BuiltInParameter();
-                case (uint)Values.Stream:
-                    return new StreamParameter();
-                case (uint)Values.Location:
-                    return new LocationParameter();
-                case (uint)Values.Component:
-                    return new ComponentParameter();
-                case (uint)Values.Index:
-                    return new IndexParameter();
-                case (uint)Values.Binding:
-                    return new BindingParameter();
-                case (uint)Values.DescriptorSet:
-                    return new DescriptorSetParameter();
-                case (uint)Values.Offset:
-                    return new OffsetParameter();
-                case (uint)Values.XfbBuffer:
-                    return new XfbBufferParameter();
-                case (uint)Values.XfbStride:
-                    return new XfbStrideParameter();
-                case (uint)Values.FuncParamAttr:
-                    return new FuncParamAttrParameter();
-                case (uint)Values.FPRoundingMode:
-                    return new FPRoundingModeParameter();
-                case (uint)Values.FPFastMathMode:
-                    return new FPFastMathModeParameter();
-                case (uint)Values.LinkageAttributes:
-                    return new LinkageAttributesParameter();
-                case (uint)Values.InputAttachmentIndex:
-                    return new InputAttachmentIndexParameter();
-                case (uint)Values.Alignment:
-                    return new AlignmentParameter();
-                case (uint)Values.MaxByteOffset:
-                    return new MaxByteOffsetParameter();
-                case (uint)Values.AlignmentId:
-                    return new AlignmentIdParameter();
-                case (uint)Values.MaxByteOffsetId:
-                    return new MaxByteOffsetIdParameter();
-                case (uint)Values.SecondaryViewportRelativeNV:
-                    return new SecondaryViewportRelativeNVParameter();
-            }
-
-            return null;
-        }
-    }
-    public class BuiltIn : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Position = 0,
-            PointSize = 1,
-            ClipDistance = 3,
-            CullDistance = 4,
-            VertexId = 5,
-            InstanceId = 6,
-            PrimitiveId = 7,
-            InvocationId = 8,
-            Layer = 9,
-            ViewportIndex = 10,
-            TessLevelOuter = 11,
-            TessLevelInner = 12,
-            TessCoord = 13,
-            PatchVertices = 14,
-            FragCoord = 15,
-            PointCoord = 16,
-            FrontFacing = 17,
-            SampleId = 18,
-            SamplePosition = 19,
-            SampleMask = 20,
-            FragDepth = 22,
-            HelperInvocation = 23,
-            NumWorkgroups = 24,
-            WorkgroupSize = 25,
-            WorkgroupId = 26,
-            LocalInvocationId = 27,
-            GlobalInvocationId = 28,
-            LocalInvocationIndex = 29,
-            WorkDim = 30,
-            GlobalSize = 31,
-            EnqueuedWorkgroupSize = 32,
-            GlobalOffset = 33,
-            GlobalLinearId = 34,
-            SubgroupSize = 36,
-            SubgroupMaxSize = 37,
-            NumSubgroups = 38,
-            NumEnqueuedSubgroups = 39,
-            SubgroupId = 40,
-            SubgroupLocalInvocationId = 41,
-            VertexIndex = 42,
-            InstanceIndex = 43,
-            SubgroupEqMaskKHR = 4416,
-            SubgroupGeMaskKHR = 4417,
-            SubgroupGtMaskKHR = 4418,
-            SubgroupLeMaskKHR = 4419,
-            SubgroupLtMaskKHR = 4420,
-            BaseVertex = 4424,
-            BaseInstance = 4425,
-            DrawIndex = 4426,
-            DeviceIndex = 4438,
-            ViewIndex = 4440,
-            BaryCoordNoPerspAMD = 4992,
-            BaryCoordNoPerspCentroidAMD = 4993,
-            BaryCoordNoPerspSampleAMD = 4994,
-            BaryCoordSmoothAMD = 4995,
-            BaryCoordSmoothCentroidAMD = 4996,
-            BaryCoordSmoothSampleAMD = 4997,
-            BaryCoordPullModelAMD = 4998,
-            FragStencilRefEXT = 5014,
-            ViewportMaskNV = 5253,
-            SecondaryPositionNV = 5257,
-            SecondaryViewportMaskNV = 5258,
-            PositionPerViewNV = 5261,
-            ViewportMaskPerViewNV = 5262,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class Scope : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            CrossDevice = 0,
-            Device = 1,
-            Workgroup = 2,
-            Subgroup = 3,
-            Invocation = 4,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class GroupOperation : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Reduce = 0,
-            InclusiveScan = 1,
-            ExclusiveScan = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class KernelEnqueueFlags : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            NoWait = 0,
-            WaitKernel = 1,
-            WaitWorkGroup = 2,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
-            }
-        }
-    }
-    public class Capability : Enum
-    {
-        public override bool IsBitEnumeration
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public enum Values : uint
-        {
-            Matrix = 0,
-            Shader = 1,
-            Geometry = 2,
-            Tessellation = 3,
-            Addresses = 4,
-            Linkage = 5,
-            Kernel = 6,
-            Vector16 = 7,
-            Float16Buffer = 8,
-            Float16 = 9,
-            Float64 = 10,
-            Int64 = 11,
-            Int64Atomics = 12,
-            ImageBasic = 13,
-            ImageReadWrite = 14,
-            ImageMipmap = 15,
-            Pipes = 17,
-            Groups = 18,
-            DeviceEnqueue = 19,
-            LiteralSampler = 20,
-            AtomicStorage = 21,
-            Int16 = 22,
-            TessellationPointSize = 23,
-            GeometryPointSize = 24,
-            ImageGatherExtended = 25,
-            StorageImageMultisample = 27,
-            UniformBufferArrayDynamicIndexing = 28,
-            SampledImageArrayDynamicIndexing = 29,
-            StorageBufferArrayDynamicIndexing = 30,
-            StorageImageArrayDynamicIndexing = 31,
-            ClipDistance = 32,
-            CullDistance = 33,
-            ImageCubeArray = 34,
-            SampleRateShading = 35,
-            ImageRect = 36,
-            SampledRect = 37,
-            GenericPointer = 38,
-            Int8 = 39,
-            InputAttachment = 40,
-            SparseResidency = 41,
-            MinLod = 42,
-            Sampled1D = 43,
-            Image1D = 44,
-            SampledCubeArray = 45,
-            SampledBuffer = 46,
-            ImageBuffer = 47,
-            ImageMSArray = 48,
-            StorageImageExtendedFormats = 49,
-            ImageQuery = 50,
-            DerivativeControl = 51,
-            InterpolationFunction = 52,
-            TransformFeedback = 53,
-            GeometryStreams = 54,
-            StorageImageReadWithoutFormat = 55,
-            StorageImageWriteWithoutFormat = 56,
-            MultiViewport = 57,
-            SubgroupDispatch = 58,
-            NamedBarrier = 59,
-            PipeStorage = 60,
-            SubgroupBallotKHR = 4423,
-            DrawParameters = 4427,
-            SubgroupVoteKHR = 4431,
-            StorageBuffer16BitAccess = 4433,
-            StorageUniformBufferBlock16 = 4433,
-            UniformAndStorageBuffer16BitAccess = 4434,
-            StorageUniform16 = 4434,
-            StoragePushConstant16 = 4435,
-            StorageInputOutput16 = 4436,
-            DeviceGroup = 4437,
-            MultiView = 4439,
-            VariablePointersStorageBuffer = 4441,
-            VariablePointers = 4442,
-            AtomicStorageOps = 4445,
-            SampleMaskPostDepthCoverage = 4447,
-            ImageGatherBiasLodAMD = 5009,
-            FragmentMaskAMD = 5010,
-            StencilExportEXT = 5013,
-            ImageReadWriteLodAMD = 5015,
-            SampleMaskOverrideCoverageNV = 5249,
-            GeometryShaderPassthroughNV = 5251,
-            ShaderViewportIndexLayerEXT = 5254,
-            ShaderViewportIndexLayerNV = 5254,
-            ShaderViewportMaskNV = 5255,
-            ShaderStereoViewNV = 5259,
-            PerViewAttributesNV = 5260,
-            SubgroupShuffleINTEL = 5568,
-            SubgroupBufferBlockIOINTEL = 5569,
-            SubgroupImageBlockIOINTEL = 5570,
-        }
-
-        public override System.Type EnumerationType
-        {
-            get
-            {
-                return typeof(Values);
             }
         }
     }

@@ -103,9 +103,9 @@ namespace SpirV
 
 	public class ImageType : Type
 	{
-		public ImageType (Type sampledType, Dim.Values dim, int depth,
+		public ImageType (Type sampledType, Dim dim, int depth,
 			bool isArray, bool isMultisampled, int sampleCount,
-			ImageFormat.Values imageFormat, AccessQualifier.Values accessQualifier)
+			ImageFormat imageFormat, AccessQualifier accessQualifier)
 		{
 			SampledType = sampledType;
 			Dim = dim;
@@ -118,13 +118,13 @@ namespace SpirV
 		}
 
 		public Type SampledType { get; }
-		public Dim.Values Dim { get; }
+		public Dim Dim { get; }
 		public int Depth { get; }
 		public bool IsArray { get; }
 		public bool IsMultisampled { get; }
 		public int SampleCount { get; }
-		public ImageFormat.Values Format { get; }
-		public AccessQualifier.Values AccessQualifier { get; }
+		public ImageFormat Format { get; }
+		public AccessQualifier AccessQualifier { get; }
 	}
 
 	public class SamplerType : Type
@@ -223,16 +223,16 @@ namespace SpirV
 
 	public class PointerType : Type
 	{
-		public StorageClass.Values StorageClass { get; }
+		public StorageClass StorageClass { get; }
 		public Type Type { get; private set; }
 
-		public PointerType (StorageClass.Values storageClass, Type type)
+		public PointerType (StorageClass storageClass, Type type)
 		{
 			StorageClass = storageClass;
 			Type = type;
 		}
 
-		public PointerType (StorageClass.Values storageClass)
+		public PointerType (StorageClass storageClass)
 		{
 			StorageClass = storageClass;
 		}

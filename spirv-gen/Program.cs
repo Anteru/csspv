@@ -149,6 +149,7 @@ namespace SpvGen
 		}
 
 		private static void ProcessInstructions (Newtonsoft.Json.Linq.JToken instructions,
+			IReadOnlyDictionary<string, bool> knownEnumerands,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
 			var ins = new List<InstructionItem> ();
@@ -200,7 +201,7 @@ namespace SpvGen
 			var sb = new StringBuilder ();
 
 			foreach (var instruction in ins) {
-				CreateInstructionClass (sb, instruction);
+				CreateInstructionClass (sb, instruction, knownEnumerands);
 			}
 
 			sb.AppendLine ("public static class Instructions {");
@@ -224,7 +225,7 @@ namespace SpvGen
 			}
 		}
 
-		private static void CreateInstructionClass (StringBuilder sb, InstructionItem instruction)
+		private static void CreateInstructionClass (StringBuilder sb, InstructionItem instruction, IReadOnlyDictionary<string, bool> knownEnumerands)
 		{
 			sb.AppendLine ($"public class {instruction.Name} : Instruction");
 			sb.AppendLine ("{");
@@ -236,10 +237,23 @@ namespace SpvGen
 			} else {
 				sb.AppendLine ($" : base (\"{instruction.Name}\", new List<Operand> () {{");
 				foreach (var operand in instruction.Operands) {
+					string constructorParameter = null;
+					if (knownEnumerands.ContainsKey (operand.Kind))
+					{
+						if (knownEnumerands [operand.Kind]) { 
+							constructorParameter = $"new EnumType<{operand.Kind}, {operand.Kind}ParameterFactory> ()";
+						} else
+						{
+							constructorParameter = $"new EnumType<{operand.Kind}> ()";
+						}
+					} else
+					{
+						constructorParameter = $"new {operand.Kind} ()";
+					}
 					if (operand.Name == null) {
-						sb.AppendLine ($"new Operand (new {operand.Kind} (), null, OperandQuantifier.{operand.Quantifier}),");
+						sb.AppendLine ($"new Operand ({constructorParameter}, null, OperandQuantifier.{operand.Quantifier}),");
 					} else {
-						sb.AppendLine ($"new Operand (new {operand.Kind} (), \"{operand.Name}\", OperandQuantifier.{operand.Quantifier}),");
+						sb.AppendLine ($"new Operand ({constructorParameter}, \"{operand.Name}\", OperandQuantifier.{operand.Quantifier}),");
 					}
 				}
 				sb.AppendLine ("} )");
@@ -258,9 +272,37 @@ namespace SpvGen
 			public IList<string> Parameters;
 		}
 
-		private static void ProcessOperandTypes (Newtonsoft.Json.Linq.JToken OperandTypes,
+		private static IReadOnlyDictionary<string, bool> ProcessOperandTypes (Newtonsoft.Json.Linq.JToken OperandTypes,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
+			var result = new Dictionary<string, bool>();
+
+			// We gather all of the types up-front as we need them in the loop
+			foreach (var n in OperandTypes)
+			{
+				// We only handle the Enums here, the others are handled 
+				// manually
+				if (n.Value<string>("category") != "ValueEnum"
+					&& n.Value<string>("category") != "BitEnum") continue;
+
+				var kind = n.Value<string>("kind");
+
+				bool hasParameters = false;
+
+				foreach (var enumerant in n["enumerants"])
+				{
+					var parameters = enumerant["parameters"];
+
+					if (parameters != null)
+					{
+						hasParameters = true;
+						break;
+					}
+				}
+
+				result.Add(kind, hasParameters);
+			}
+
 			foreach (var n in OperandTypes) {
 				// We only handle the Enums here, the others are handled 
 				// manually
@@ -299,65 +341,75 @@ namespace SpvGen
 				}
 
 				StringBuilder sb = new StringBuilder ();
-				sb.AppendLine ($"public class {kind} : Enum");
-				sb.AppendLine ("{");
-
-				if (enumType == SpirvEnumType.Bit) {
-					sb.AppendLine ("public override bool IsBitEnumeration { get { return true; } }");
-					sb.AppendLine ("[Flags]");
-				} else {
-					sb.AppendLine ("public override bool IsBitEnumeration { get { return false; } }");
+				
+				if (enumType == SpirvEnumType.Bit)
+				{
+					sb.AppendLine("[Flags]");
 				}
-
-				sb.AppendLine ("public enum Values : uint");
+				sb.AppendLine ($"public enum {kind} : uint");
 				sb.AppendLine ("{");
 				foreach (var e in enumerants) {
 					sb.AppendFormat ("{0} = {1},\n", e.Name, e.Value);
 				}
 				sb.AppendLine ("}");
 
-				sb.AppendLine ("public override System.Type EnumerationType { get { return typeof (Values); } }");
+				if (result [kind]) { 
+					sb.AppendLine($"public class {kind}ParameterFactory : ParameterFactory");
+					sb.AppendLine("{");
+					bool hasParameters = false;
+					foreach (var e in enumerants) {
+						if (e.Parameters == null) continue;
+						sb.AppendLine ($"public class {e.Name}Parameter : Parameter");
+						sb.AppendLine ("{");
+						sb.AppendLine ("public override IList<OperandType> OperandTypes { get { return OperandTypes_; } }");
+						sb.AppendLine ("private static IList<OperandType> OperandTypes_ = new List<OperandType> () {");
 
-				bool hasParameters = false;
-				foreach (var e in enumerants) {
-					if (e.Parameters == null) continue;
-					sb.AppendLine ($"public class {e.Name}Parameter : Parameter");
-					sb.AppendLine ("{");
-					sb.AppendLine ("public override IList<OperandType> OperandTypes { get { return OperandTypes_; } }");
-					sb.AppendLine ("private static IList<OperandType> OperandTypes_ = new List<OperandType> () {");
+						foreach (var p in e.Parameters) {
+							if (result.ContainsKey (p))
+							{
+								if (result[p])
+								{
+									sb.AppendLine($"new EnumType<{p},{p}Parameters> (),");
+								} else {
+									sb.AppendLine($"new EnumType<{p}> (),");
+								}
+							} else { 
+								sb.AppendLine ($"new {p} (),");
+							}
+						}
 
-					foreach (var p in e.Parameters) {
-						sb.AppendLine ($"new {p} (),");
+						sb.AppendLine ("};");
+						sb.AppendLine ("}");
+
+						hasParameters = true;
 					}
 
-					sb.AppendLine ("};");
+					if (hasParameters) {
+						OperandTypeCreateParameterMethod (kind, enumerants, sb);
+					}
+
 					sb.AppendLine ("}");
-
-					hasParameters = true;
 				}
-
-				if (hasParameters) {
-					OperandTypeCreateParameterMethod (enumerants, sb);
-				}
-
-				sb.AppendLine ("}");
 
 				var tree = CSharpSyntaxTree.ParseText (sb.ToString ());
 				foreach (var node in tree.GetRoot ().ChildNodes ()) {
 					nodes.Add (node.NormalizeWhitespace ());
 				}
 			}
+
+			return result;
 		}
 
-		private static void OperandTypeCreateParameterMethod (IList<OperatorKindEnumerant> enumerants, StringBuilder sb)
+		private static void OperandTypeCreateParameterMethod (string enumName, 
+			IList<OperatorKindEnumerant> enumerants, StringBuilder sb)
 		{
-			sb.AppendLine ("public override Parameter CreateParameter (uint value)");
+			sb.AppendLine ($"public override Parameter CreateParameter (object value)");
 			sb.AppendLine ("{");
-			sb.AppendLine ("switch (value) {");
+			sb.AppendLine ($"switch (({enumName})value) {{");
 			foreach (var e in enumerants) {
 				if (e.Parameters == null) continue;
 
-				sb.AppendLine ($"case (uint)Values.{e.Name}: return new {e.Name}Parameter ();");
+				sb.AppendLine ($"case {enumName}.{e.Name}: return new {e.Name}Parameter ();");
 			}
 			sb.AppendLine ("}");
 			sb.AppendLine ("return null;");
@@ -389,8 +441,8 @@ namespace SpvGen
 
 			var nodes = new List<SyntaxNode> ();
 
-			ProcessInstructions (doc ["instructions"], generator, nodes);
-			ProcessOperandTypes (doc ["operand_kinds"], generator, nodes);
+			var knownEnumerands = ProcessOperandTypes(doc["operand_kinds"], generator, nodes);
+			ProcessInstructions (doc ["instructions"], knownEnumerands, generator, nodes);
 						
 			var cu = generator.CompilationUnit (
 				generator.NamespaceImportDeclaration ("System"),

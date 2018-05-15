@@ -138,20 +138,20 @@ namespace SpirV
 						break;
 					case OpTypeImage t: {
 							var sampledType = result [((ObjectReference)i.Operands[1].Value).Id];
-							var dim = i.Operands[2].GetSingleEnumValue<Dim.Values> ();
+							var dim = i.Operands[2].GetSingleEnumValue<Dim> ();
 							var depth = (uint)i.Operands [3].Value;
 							var isArray = (uint)i.Operands [4].Value != 0;
 							var isMultiSampled = (uint)i.Operands [5].Value != 0;
 							var sampled = (uint)i.Operands [6].Value;
 
-							var imageFormat = i.Operands [7].GetSingleEnumValue<ImageFormat.Values> ();
+							var imageFormat = i.Operands [7].GetSingleEnumValue<ImageFormat> ();
 
 							result [i.Words [1]] = new ImageType (sampledType,
 								dim,
 								(int)depth, isArray, isMultiSampled,
 								(int)sampled, imageFormat,
 								i.Operands.Count > 8 ?
-								i.Operands[8].GetSingleEnumValue<AccessQualifier.Values> () : AccessQualifier.Values.ReadOnly);
+								i.Operands[8].GetSingleEnumValue<AccessQualifier> () : AccessQualifier.ReadOnly);
 						}
 						break;
 					case OpTypeSampledImage t: {
@@ -172,7 +172,7 @@ namespace SpirV
 					case OpTypeForwardPointer t: {
 							// We create a normal pointer, but with unspecified type
 							// This will get resolved later on
-							result [i.Words [1]] = new PointerType ((StorageClass.Values)i.Words [2]);
+							result [i.Words [1]] = new PointerType ((StorageClass)i.Words [2]);
 						}
 						break;
 					case OpTypePointer t: {
@@ -182,12 +182,12 @@ namespace SpirV
 								// match
 								var pt = result [i.Words [1]] as PointerType;
 								Debug.Assert (pt != null);
-								Debug.Assert (pt.StorageClass == (StorageClass.Values)i.Words [2]);
+								Debug.Assert (pt.StorageClass == (StorageClass)i.Words [2]);
 
 								pt.ResolveForwardReference (result [i.Words [3]]);
 							} else {
 								result [i.Words [1]] = new PointerType (
-									(StorageClass.Values)i.Words [2],
+									(StorageClass)i.Words [2],
 									result [i.Words [3]]
 									);
 							}
