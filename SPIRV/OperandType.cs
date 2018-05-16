@@ -85,7 +85,18 @@ namespace SpirV
 
 	public class LiteralSpecConstantOpInteger : Literal
 	{
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			List<ObjectReference> result = new List<ObjectReference> ();
+			foreach (var w in words) {
+				result.Add (new ObjectReference (w));
+			}
 
+			value = result;
+			wordsUsed = words.Count;
+
+			return true;
+		}
 	}
 
 	public class Parameter

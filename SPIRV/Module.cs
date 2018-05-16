@@ -35,7 +35,7 @@ namespace SpirV
 		}
 
 		private static void Read (IList<ParsedInstruction> instructions,
-			Dictionary<uint, ModuleObject> objects)
+			Dictionary<uint, ParsedInstruction> objects)
 		{
 			// Debug instructions can be only processed after everything
 			// else has been parsed, as they may reference types which haven't
@@ -45,10 +45,7 @@ namespace SpirV
 			// Entry points contain forward references
 			// Those need to be resolved afterwards
 			var entryPoints = new List<ParsedInstruction> ();
-
-			// OpFunction/OpFunctionParameter/OpFunctionEnd requires state
-			Function currentFunction = null;
-
+			
 			foreach (var instruction in instructions) {
 				if (IsDebugInstruction (instruction)) {
 					debugInstructions.Add (instruction);
@@ -66,73 +63,30 @@ namespace SpirV
 
 				instruction.ResolveResultType (objects);
 
+				if (instruction.HasResult) {
+					objects[instruction.ResultId] = instruction;
+				}
+
 				switch (instruction.Instruction) {
 					// Constants require that the result type has been resolved
 					case OpConstant oc: {
 							var t = instruction.ResultType;
 							System.Diagnostics.Debug.Assert (t != null);
 							System.Diagnostics.Debug.Assert (t is ScalarType);
-
-							var constant = new Constant (instruction, ConvertConstant (
+														
+							instruction.Value = ConvertConstant (
 								instruction.ResultType as ScalarType,
-								instruction.Words.Skip (3).ToList ()));
-							objects[constant.Id] = constant;
-							break;
-						}
-					case OpVariable ov: {
-							var variable = new Variable (instruction);
-							objects[variable.Id] = variable;
-
-							break;
-						}
-
-					case OpLabel ol: {
-							var label = new Label (instruction);
-							objects[label.Id] = label;
-
-							break;
-						}
-					case OpExtInstImport eii: {
-							var import = new ExtendedInstructionSetImport (instruction);
-							objects[import.Id] = import;
-
-							break;
-						}
-
-					case OpFunction of: {
-							var function = new Function (instruction, objects);
-							objects[function.Id] = function;
-
-							currentFunction = function;
-
-							break;
-						}
-					case OpFunctionParameter ofp: {
-							var parameter = new FunctionParameter (instruction);
-							objects[parameter.Id] = parameter;
-
-							currentFunction.AddParameter (parameter);
-
-							break;
-						}
-					case OpFunctionEnd ofe: {
-							currentFunction = null;
+								instruction.Words.Skip (3).ToList ());
+							
 							break;
 						}
 				}
 			}
 
-			foreach (var instruction in entryPoints) {
-				var entryPoint = new EntryPoint (instruction);
-				objects[entryPoint.Id] = entryPoint;
-
-				entryPoint.Resolve (objects);
-			}
-
 			foreach (var instruction in debugInstructions) {
 				switch (instruction.Instruction) {
 					case OpMemberName mn: {
-							var t = objects[instruction.Words[1]] as StructType;
+							var t = objects[instruction.Words[1]].ResultType as StructType;
 
 							System.Diagnostics.Debug.Assert (t != null);
 
@@ -157,7 +111,7 @@ namespace SpirV
 			}
 
 			foreach (var instruction in instructions) {
-				instruction.ResolveResult (objects);
+				instruction.ResolveReferences (objects);
 			}
 		}
 
@@ -204,7 +158,7 @@ namespace SpirV
 				while (true) {
 					var instructionStart = reader.ReadWord ();
 					var wordCount = (ushort)(instructionStart >> 16);
-					var opCode = (int)(instructionStart & 0xFF);
+					var opCode = (int)(instructionStart & 0xFFFF);
 
 					List<uint> words = new List<uint> ()
 					{
@@ -227,57 +181,66 @@ namespace SpirV
 		/// Collect types from OpType* instructions
 		/// </summary>
 		private static void ProcessTypeInstruction (ParsedInstruction i,
-			Dictionary<uint, ModuleObject> objects)
+			Dictionary<uint, ParsedInstruction> objects)
 		{
 			switch (i.Instruction) {
 				case OpTypeInt t: {
-						objects[i.Words[1]] = new IntegerType (
+						i.ResultType = new IntegerType (
 							(int)i.Words[2],
 							i.Words[3] == 1u);
 					}
 					break;
 				case OpTypeFloat t: {
-						objects[i.Words[1]] = new FloatingPointType (
+						i.ResultType = new FloatingPointType (
 							(int)i.Words[2]);
 					}
 					break;
 				case OpTypeVector t: {
-						objects[i.Words[1]] = new VectorType (
-							objects[i.Words[2]] as ScalarType,
+						i.ResultType = new VectorType (
+							objects[i.Words[2]].ResultType as ScalarType,
 							(int)i.Words[3]);
 					}
 					break;
 				case OpTypeMatrix t: {
-						objects[i.Words[1]] = new MatrixType (
-							objects[i.Words[2]] as VectorType,
+						i.ResultType = new MatrixType (
+							objects[i.Words[2]].ResultType as VectorType,
 							(int)i.Words[3]);
 					}
 					break;
 				case OpTypeArray t: {
-						objects[i.Words[1]] = new ArrayType (
-							objects[i.Words[2]] as Type,
-							(int)i.Words[3]);
+						var constant = objects[i.Words[3]].Value;
+						int size = 0;
+
+						if (constant is UInt32) {
+							size = (int)(uint)(constant);
+						} else if (constant is Int32) {
+							size = (int)constant;
+						} ///TODO handle more constants
+
+						i.ResultType = new ArrayType (
+							objects[i.Words[2]].ResultType,
+							size);
 					}
 					break;
 				case OpTypeRuntimeArray t: {
-						objects[i.Words[1]] = new RuntimeArrayType (
-							objects[i.Words[2]] as Type);
+						i.ResultType = new RuntimeArrayType (
+							objects[i.Words[2]].ResultType as Type);
 					}
 					break;
 				case OpTypeBool t: {
-						objects[i.Words[1]] = new BoolType ();
+						i.ResultType = new BoolType ();
 					}
 					break;
 				case OpTypeOpaque t: {
-						objects[i.Words[1]] = new OpaqueType ();
+						i.ResultType = new OpaqueType ();
 					}
 					break;
 				case OpTypeVoid t: {
-						objects[i.Words[1]] = new VoidType ();
+						i.ResultType = new VoidType ();
 					}
 					break;
 				case OpTypeImage t: {
-						var sampledType = objects[((ObjectReference)i.Operands[1].Value).Id] as Type;
+						var sampledType = objects[((ObjectReference)i.Operands[1].Value).Id].ResultType;
 						var dim = i.Operands[2].GetSingleEnumValue<Dim> ();
 						var depth = (uint)i.Operands[3].Value;
 						var isArray = (uint)i.Operands[4].Value != 0;
@@ -286,7 +249,7 @@ namespace SpirV
 
 						var imageFormat = i.Operands[7].GetSingleEnumValue<ImageFormat> ();
 
-						objects[i.Words[1]] = new ImageType (sampledType,
+						i.ResultType = new ImageType (sampledType,
 							dim,
 							(int)depth, isArray, isMultiSampled,
 							(int)sampled, imageFormat,
@@ -294,25 +257,29 @@ namespace SpirV
 							i.Operands[8].GetSingleEnumValue<AccessQualifier> () : AccessQualifier.ReadOnly);
 					}
 					break;
+				case OpTypeSampler st: {
+						i.ResultType = new SamplerType ();
+						break;
+					}
 				case OpTypeSampledImage t: {
-						objects[i.Words[1]] = new SampledImageType (
-							objects[i.Words[2]] as ImageType
+						i.ResultType = new SampledImageType (
+							objects[i.Words[2]].ResultType as ImageType
 						);
 					}
 					break;
 				case OpTypeFunction t: {
 						var parameterTypes = new List<Type> ();
 						for (int j = 3; j < i.Words.Count; ++j) {
-							parameterTypes.Add (objects[i.Words[j]] as Type);
+							parameterTypes.Add (objects[i.Words[j]].ResultType);
 						}
-						objects[i.Words[1]] = new FunctionType (objects[i.Words[2]] as Type,
+						i.ResultType = new FunctionType (objects[i.Words[2]].ResultType,
 							parameterTypes);
 					}
 					break;
 				case OpTypeForwardPointer t: {
 						// We create a normal pointer, but with unspecified type
 						// This will get resolved later on
-						objects[i.Words[1]] = new PointerType ((StorageClass)i.Words[2]);
+						i.ResultType = new PointerType ((StorageClass)i.Words[2]);
 					}
 					break;
 				case OpTypePointer t: {
@@ -320,15 +287,15 @@ namespace SpirV
 							// If there is something present, it must have been
 							// a forward reference. The storage type must
 							// match
-							var pt = objects[i.Words[1]] as PointerType;
+							var pt = i.ResultType as PointerType;
 							Debug.Assert (pt != null);
 							Debug.Assert (pt.StorageClass == (StorageClass)i.Words[2]);
 
-							pt.ResolveForwardReference (objects[i.Words[3]] as Type);
+							pt.ResolveForwardReference (objects[i.Words[3]].ResultType);
 						} else {
-							objects[i.Words[1]] = new PointerType (
+							i.ResultType = new PointerType (
 								(StorageClass)i.Words[2],
-								objects[i.Words[3]] as Type
+								objects[i.Words[3]].ResultType
 								);
 						}
 					}
@@ -336,10 +303,10 @@ namespace SpirV
 				case OpTypeStruct t: {
 						var memberTypes = new List<Type> ();
 						for (int j = 2; j < i.Words.Count; ++j) {
-							memberTypes.Add (objects[i.Words[j]] as Type);
+							memberTypes.Add (objects[i.Words[j]].ResultType);
 						}
 
-						objects[i.Words[1]] = new StructType (memberTypes);
+						i.ResultType = new StructType (memberTypes);
 					}
 					break;
 			}
@@ -397,6 +364,6 @@ namespace SpirV
 
 		private readonly List<ParsedInstruction> instructions_;
 
-		private readonly Dictionary<uint, ModuleObject> objects_ = new Dictionary<uint, ModuleObject> ();
+		private readonly Dictionary<uint, ParsedInstruction> objects_ = new Dictionary<uint, ParsedInstruction> ();
 	}
 }

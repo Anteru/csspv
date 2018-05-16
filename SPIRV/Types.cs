@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SpirV
 {
-	public class Type : ModuleObject
+	public class Type
 	{
 	}
 
@@ -151,11 +151,16 @@ namespace SpirV
 		public ArrayType (Type elementType, int elementCount)
 		{
 			ElementType = elementType;
-			elementCount = ElementCount;
+			ElementCount = elementCount;
 		}
 
 		public int ElementCount { get; }
 		public Type ElementType { get; }
+
+		public override string ToString ()
+		{
+			return $"{ElementType}[{ElementCount}]";
+		}
 	}
 
 	public class RuntimeArrayType : Type

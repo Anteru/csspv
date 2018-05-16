@@ -141,129 +141,6 @@ namespace SpirV
 		}
 	}
 
-	public class ModuleObject
-	{
-		public string Name { get; set; }
-	}
-
-	public class Label : ModuleObject
-	{
-		public uint Id { get; }
-
-		public Label (ParsedInstruction instruction)
-		{
-			Id = (instruction.Operands[0].Value as ObjectReference).Id;
-		}
-	}
-
-	public class ExtendedInstructionSetImport : ModuleObject
-	{
-		public uint Id { get; }
-		public ExtendedInstructionSetImport (ParsedInstruction instruction)
-		{
-			Id = (instruction.Operands[0].Value as ObjectReference).Id;
-			Name = (string)instruction.Operands[1].Value;
-		}
-	}
-
-	public class Function : ModuleObject
-	{
-		public uint Id { get; }
-		public FunctionControl FunctionControl { get; }
-		public Type FunctionType { get; }
-
-		public Function (ParsedInstruction instruction, IReadOnlyDictionary<uint, ModuleObject> objects)
-		{
-			Id = (instruction.Operands[1].Value as ObjectReference).Id;
-			FunctionControl = instruction.Operands[2].GetBitEnumValue<FunctionControl> ();
-			FunctionType = objects[(instruction.Operands[3].Value as ObjectReference).Id] as FunctionType;
-		}
-
-		private readonly List<FunctionParameter> parameters_ = new List<FunctionParameter> ();
-		public IReadOnlyList<FunctionParameter> Parameters { get => parameters_; }
-
-		public void AddParameter (FunctionParameter p)
-		{
-			if (p == null) {
-				throw new ArgumentNullException (nameof (p));
-			}
-
-			parameters_.Add (p);
-		}
-	}
-
-	public class FunctionParameter : ModuleObject
-	{
-		public uint Id { get; }
-		public Type Type { get; }
-		public FunctionParameter (ParsedInstruction instruction)
-		{
-			System.Diagnostics.Debug.Assert (instruction.ResultType != null);
-
-			Id = (instruction.Operands[1].Value as ObjectReference).Id;
-			Type = instruction.ResultType;
-		}
-	}
-
-	public class Constant : ModuleObject
-	{
-		public uint Id { get; }
-		public Type Type { get; }
-		public object Value { get; }
-		
-		public Constant (ParsedInstruction instruction, object value)
-		{
-			Id = (instruction.Operands[1].Value as ObjectReference).Id;
-			Type = instruction.ResultType;
-			Value = value;
-		}
-	}
-
-	public class Variable : ModuleObject
-	{
-		public StorageClass StorageClass { get; }
-		public Type Type { get; }
-		public uint Id { get; }
-
-		public Variable (ParsedInstruction instruction)
-		{
-			Type = instruction.ResultType;
-			Id = (instruction.Operands[1].Value as ObjectReference).Id;
-			StorageClass = instruction.Operands[2].GetSingleEnumValue<StorageClass>();
-
-			// Parse initializer
-		}
-	}
-
-	public class EntryPoint : ModuleObject
-	{
-		public ExecutionModel ExecutionModel { get; }
-		public uint Id { get; }
-
-		public List<ObjectReference> Interface { get; } = new List<ObjectReference>();
-
-		public EntryPoint (ParsedInstruction instruction)
-		{
-			ExecutionModel = instruction.Operands[0].GetSingleEnumValue<ExecutionModel> ();
-			Id = (instruction.Operands[1].Value as ObjectReference).Id;
-			Name = (string)instruction.Operands[2].Value;
-
-			var interfaceItems = instruction.Operands[3].Value as VaryingOperandValue;
-			foreach (var op in interfaceItems.Values)
-			{
-				Interface.Add(op as ObjectReference);
-			}
-		}
-
-		public void Resolve (IReadOnlyDictionary<uint, ModuleObject> objects)
-		{
-			foreach (var o in Interface)
-			{
-				o.Resolve(objects);
-			}
-		}
-	}
-
 	public class ObjectReference
 	{
 		public ObjectReference (uint id)
@@ -271,14 +148,15 @@ namespace SpirV
 			Id = id;
 		}
 
-		public void Resolve (IReadOnlyDictionary<uint, ModuleObject> objects)
+		public void Resolve (IReadOnlyDictionary<uint, ParsedInstruction> objects)
 		{
 			object_ = objects [Id];
 		}
 
 		public uint Id { get; }
+		public ParsedInstruction Reference { get => object_; }
 
-		private ModuleObject object_;
+		private ParsedInstruction object_;
 
 		public override string ToString ()
 		{
@@ -292,6 +170,10 @@ namespace SpirV
 
 		public Instruction Instruction { get; }
 		public IList<ParsedOperand> Operands { get; } = new List<ParsedOperand> ();
+
+		public string Name { get; set; }
+
+		public object Value { get; set; }
 
 		public ParsedInstruction (int opCode, IList<uint> words)
 		{
@@ -360,24 +242,33 @@ namespace SpirV
 			sb.Append (OperandValueToString (value));
 		}
 
-		public Type ResultType { get; private set; }
-		public ModuleObject Result { get; private set; }
+		public Type ResultType { get; set; }
+		public uint ResultId { get
+			{
+				for (int i = 0; i < Instruction.Operands.Count; ++i) {
+					if (Instruction.Operands[i].Type is IdResult) {
+						return (Operands[i].Value as ObjectReference).Id;
+					}
+				}
 
-		public void ResolveResultType (IReadOnlyDictionary<uint, ModuleObject> types)
-		{
-			if (Instruction.Operands.Count > 0 && Instruction.Operands [0].Type is IdResultType) {
-				ResultType = (Type)types [Words [1]];
+				return 0;
 			}
 		}
 
-		public void ResolveResult (IReadOnlyDictionary<uint, ModuleObject> objects)
-		{
-			for (int i = 0; i < Instruction.Operands.Count; ++i) {
-				if (Instruction.Operands[i].Type is IdResult) {
-					Result = objects[(Operands[i].Value as ObjectReference).Id];
+		public bool HasResult { get => ResultId != 0; }
 
-					// At most one IdResult, so we can always exit here
-					break;
+		public void ResolveResultType (IReadOnlyDictionary<uint, ParsedInstruction> objects)
+		{
+			if (Instruction.Operands.Count > 0 && Instruction.Operands [0].Type is IdResultType) {
+				ResultType = objects[(uint)Operands[0].Value].ResultType;
+			}
+		}
+
+		public void ResolveReferences (IReadOnlyDictionary<uint, ParsedInstruction> objects)
+		{
+			foreach (var operand in Operands) {
+				if (operand.Value is ObjectReference objectReference) {
+					objectReference.Resolve (objects);
 				}
 			}
 		}
@@ -400,10 +291,10 @@ namespace SpirV
 
 			if (currentOperand < Operands.Count &&
 				Instruction.Operands [currentOperand].Type is IdResult) {
-				if (string.IsNullOrWhiteSpace (Result.Name)) {
+				if (string.IsNullOrWhiteSpace (Name)) {
 					AppendValue (sb, Operands[currentOperand].Value);
 				} else {
-					sb.Append (Result.Name);
+					sb.Append (Name);
 				}
 				sb.Append (" = ");
 
