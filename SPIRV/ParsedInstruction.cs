@@ -90,7 +90,7 @@ namespace SpirV
 		public uint Enumerand { get { return (uint)(object)key_; } }
 		public List<object> Value { get; }
 
-		private T key_ = default;
+		private readonly T key_ = default;
 
 		public ValueEnumOperandValue (T key, List<object> value)
 		{
@@ -103,11 +103,9 @@ namespace SpirV
 			var sb = new StringBuilder();
 
 			sb.Append(key_);
-			var valueList = Value as IList<object>;
-			if (valueList != null && valueList.Count > 0)
-			{
-				sb.Append(" ");
-				sb.AppendJoin(" ", valueList.Select(x => ParsedInstruction.OperandValueToString(x)));
+			if (Value is IList<object> valueList && valueList.Count > 0) {
+				sb.Append (" ");
+				sb.AppendJoin (" ", valueList.Select (x => ParsedInstruction.OperandValueToString (x)));
 			}
 
 			return sb.ToString();
@@ -158,6 +156,16 @@ namespace SpirV
 		}
 	}
 
+	public class ExtendedInstructionSetImport : ModuleObject
+	{
+		public uint Id { get; }
+		public ExtendedInstructionSetImport (ParsedInstruction instruction)
+		{
+			Id = (instruction.Operands[0].Value as ObjectReference).Id;
+			Name = (string)instruction.Operands[1].Value;
+		}
+	}
+
 	public class Function : ModuleObject
 	{
 		public uint Id { get; }
@@ -169,6 +177,45 @@ namespace SpirV
 			Id = (instruction.Operands[1].Value as ObjectReference).Id;
 			FunctionControl = instruction.Operands[2].GetBitEnumValue<FunctionControl> ();
 			FunctionType = objects[(instruction.Operands[3].Value as ObjectReference).Id] as FunctionType;
+		}
+
+		private readonly List<FunctionParameter> parameters_ = new List<FunctionParameter> ();
+		public IReadOnlyList<FunctionParameter> Parameters { get => parameters_; }
+
+		public void AddParameter (FunctionParameter p)
+		{
+			if (p == null) {
+				throw new ArgumentNullException (nameof (p));
+			}
+
+			parameters_.Add (p);
+		}
+	}
+
+	public class FunctionParameter : ModuleObject
+	{
+		public uint Id { get; }
+		public Type Type { get; }
+		public FunctionParameter (ParsedInstruction instruction)
+		{
+			System.Diagnostics.Debug.Assert (instruction.ResultType != null);
+
+			Id = (instruction.Operands[1].Value as ObjectReference).Id;
+			Type = instruction.ResultType;
+		}
+	}
+
+	public class Constant : ModuleObject
+	{
+		public uint Id { get; }
+		public Type Type { get; }
+		public object Value { get; }
+		
+		public Constant (ParsedInstruction instruction, object value)
+		{
+			Id = (instruction.Operands[1].Value as ObjectReference).Id;
+			Type = instruction.ResultType;
+			Value = value;
 		}
 	}
 
@@ -314,11 +361,24 @@ namespace SpirV
 		}
 
 		public Type ResultType { get; private set; }
+		public ModuleObject Result { get; private set; }
 
 		public void ResolveResultType (IReadOnlyDictionary<uint, ModuleObject> types)
 		{
 			if (Instruction.Operands.Count > 0 && Instruction.Operands [0].Type is IdResultType) {
 				ResultType = (Type)types [Words [1]];
+			}
+		}
+
+		public void ResolveResult (IReadOnlyDictionary<uint, ModuleObject> objects)
+		{
+			for (int i = 0; i < Instruction.Operands.Count; ++i) {
+				if (Instruction.Operands[i].Type is IdResult) {
+					Result = objects[(Operands[i].Value as ObjectReference).Id];
+
+					// At most one IdResult, so we can always exit here
+					break;
+				}
 			}
 		}
 
@@ -340,7 +400,11 @@ namespace SpirV
 
 			if (currentOperand < Operands.Count &&
 				Instruction.Operands [currentOperand].Type is IdResult) {
-				AppendValue (sb, Operands [currentOperand].Value);
+				if (string.IsNullOrWhiteSpace (Result.Name)) {
+					AppendValue (sb, Operands[currentOperand].Value);
+				} else {
+					sb.Append (Result.Name);
+				}
 				sb.Append (" = ");
 
 				++currentOperand;

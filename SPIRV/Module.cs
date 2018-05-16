@@ -46,6 +46,9 @@ namespace SpirV
 			// Those need to be resolved afterwards
 			var entryPoints = new List<ParsedInstruction> ();
 
+			// OpFunction/OpFunctionParameter/OpFunctionEnd requires state
+			Function currentFunction = null;
+
 			foreach (var instruction in instructions) {
 				if (IsDebugInstruction (instruction)) {
 					debugInstructions.Add (instruction);
@@ -70,9 +73,10 @@ namespace SpirV
 							System.Diagnostics.Debug.Assert (t != null);
 							System.Diagnostics.Debug.Assert (t is ScalarType);
 
-							instruction.Operands[2].Value = ConvertConstant (
+							var constant = new Constant (instruction, ConvertConstant (
 								instruction.ResultType as ScalarType,
-								instruction.Words.Skip (3).ToList ());
+								instruction.Words.Skip (3).ToList ()));
+							objects[constant.Id] = constant;
 							break;
 						}
 					case OpVariable ov: {
@@ -81,16 +85,38 @@ namespace SpirV
 
 							break;
 						}
+
 					case OpLabel ol: {
 							var label = new Label (instruction);
 							objects[label.Id] = label;
 
 							break;
 						}
+					case OpExtInstImport eii: {
+							var import = new ExtendedInstructionSetImport (instruction);
+							objects[import.Id] = import;
+
+							break;
+						}
+
 					case OpFunction of: {
 							var function = new Function (instruction, objects);
 							objects[function.Id] = function;
 
+							currentFunction = function;
+
+							break;
+						}
+					case OpFunctionParameter ofp: {
+							var parameter = new FunctionParameter (instruction);
+							objects[parameter.Id] = parameter;
+
+							currentFunction.AddParameter (parameter);
+
+							break;
+						}
+					case OpFunctionEnd ofe: {
+							currentFunction = null;
 							break;
 						}
 				}
@@ -128,6 +154,10 @@ namespace SpirV
 							break;
 						}
 				}
+			}
+
+			foreach (var instruction in instructions) {
+				instruction.ResolveResult (objects);
 			}
 		}
 
@@ -328,6 +358,7 @@ namespace SpirV
 				case IntegerType i: {
 						if (i.Signed) {
 							if (i.Width == 16) {
+								///TODO ToInt16?
 								return (short)BitConverter.ToInt32 (bytes, 0);
 							} else if (i.Width == 32) {
 								return BitConverter.ToInt32 (bytes, 0);
@@ -344,7 +375,7 @@ namespace SpirV
 							}
 						}
 
-						throw new Exception ("Cannot construct floating point literal.");
+						throw new Exception ("Cannot construct integer literal.");
 					}
 
 				case FloatingPointType f: {
@@ -364,8 +395,8 @@ namespace SpirV
 		public ModuleHeader Header { get; }
 		public IReadOnlyList<ParsedInstruction> Instructions { get { return instructions_; } }
 
-		private List<ParsedInstruction> instructions_;
+		private readonly List<ParsedInstruction> instructions_;
 
-		private Dictionary<uint, ModuleObject> objects_ = new Dictionary<uint, ModuleObject> ();
+		private readonly Dictionary<uint, ModuleObject> objects_ = new Dictionary<uint, ModuleObject> ();
 	}
 }
