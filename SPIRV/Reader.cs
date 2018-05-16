@@ -40,5 +40,5 @@ namespace SpirV
 
 		private System.IO.BinaryReader reader_;
 		bool littleEndian_;
-    }
+	}
 }

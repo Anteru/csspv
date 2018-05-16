@@ -6,7 +6,6 @@ namespace SpirV
 {
 	public class Type : ModuleObject
 	{
-
 	}
 
 	public class VoidType : Type
@@ -218,7 +217,6 @@ namespace SpirV
 
 	public class OpaqueType : Type
 	{
-		public string Name { get; }
 	}
 
 	public class PointerType : Type

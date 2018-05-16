@@ -7,7 +7,7 @@ using System.Linq;
 namespace SpirV
 {
 	public class Module
-    {
+	{
 		public Module (ModuleHeader header, List<ParsedInstruction> instructions)
 		{
 			Header = header;
@@ -16,20 +16,51 @@ namespace SpirV
 			Read (instructions_, objects_);
 		}
 
+		private static HashSet<string> debugInstructions_ = new HashSet<string>
+		{
+			"OpSourceContinued",
+			"OpSource",
+			"OpSourceExtension",
+			"OpName",
+			"OpMemberName",
+			"OpString",
+			"OpLine",
+			"OpNoLine",
+			"OpModuleProcessed"
+		};
+
+		public static bool IsDebugInstruction (ParsedInstruction instruction)
+		{
+			return debugInstructions_.Contains(instruction.Instruction.Name);
+		}
+
 		private static void Read (IList<ParsedInstruction> instructions,
 			Dictionary<uint, ModuleObject> objects)
 		{
+			// Debug instructions can be only processed after everything
+			// else has been parsed, as they may reference types which haven't
+			// been seen in the file yet
+			var debugInstructions = new List<ParsedInstruction>();
+
+			// Entry points contain forward references
+			// Those need to be resolved afterwards
+			var entryPoints = new List<ParsedInstruction>();
+
 			foreach (var instruction in instructions) {
+				if (IsDebugInstruction (instruction))
+				{
+					debugInstructions.Add(instruction);
+					continue;
+				}
+
+				if (instruction.Instruction is OpEntryPoint)
+				{
+					entryPoints.Add(instruction);
+					continue;
+				}
+
 				if (instruction.Instruction.Name.StartsWith ("OpType")) {
 					ProcessTypeInstruction (instruction, objects);
-				} else if (instruction.Instruction is OpMemberName) {
-					var t = objects [instruction.Words [1]] as StructType;
-
-					System.Diagnostics.Debug.Assert (t != null);
-
-					//TODO: This should use proper accessors eventually
-					t.SetMemberName ((uint)instruction.Operands [1].Value,
-						instruction.Operands [2].Value as string);
 				}
 
 				instruction.ResolveResultType (objects);
@@ -43,6 +74,58 @@ namespace SpirV
 					instruction.Operands [2].Value = ConvertConstant (
 						instruction.ResultType as ScalarType,
 						instruction.Words.Skip (3).ToList ());
+				} else if (instruction.Instruction is OpVariable)
+				{
+					var variable = new Variable(instruction);
+					objects[variable.Id] = variable;
+				} else if (instruction.Instruction is OpLabel)
+				{
+					var label = new Label(instruction);
+					objects[label.Id] = label;
+				} else if (instruction.Instruction is OpFunction)
+				{
+					var function = new Function(instruction, objects);
+					objects[function.Id] = function;
+				}
+			}
+
+			foreach (var instruction in entryPoints)
+			{
+				var entryPoint = new EntryPoint(instruction);
+				objects[entryPoint.Id] = entryPoint;
+
+				entryPoint.Resolve(objects);
+			}
+
+			foreach (var instruction in debugInstructions)
+			{
+				switch (instruction.Instruction)
+				{
+					case OpMemberName mn:
+						{
+							var t = objects[instruction.Words[1]] as StructType;
+
+							System.Diagnostics.Debug.Assert(t != null);
+
+							///TODO This should use proper accessors eventually
+							t.SetMemberName((uint)instruction.Operands[1].Value,
+								instruction.Operands[2].Value as string);
+							break;
+						}
+					case OpName n:
+						{
+							// We skip naming objects we don't know about
+							if (! objects.ContainsKey (instruction.Words [1]))
+							{
+								///TODO Fix this
+								continue;
+							}
+							var t = objects[instruction.Words[1]];
+
+							t.Name = instruction.Operands[1].Value as string;
+
+							break;
+						}
 				}
 			}
 		}
@@ -283,5 +366,5 @@ namespace SpirV
 		private List<ParsedInstruction> instructions_;
 
 		private Dictionary<uint, ModuleObject> objects_ = new Dictionary<uint, ModuleObject> ();
-    }
+	}
 }

@@ -14,8 +14,8 @@ namespace SpirV
 		public uint reserved;
 	}
 
-    public class Disassembler
-    {
+	public class Disassembler
+	{
 		public string Disassemble (Module module)
 		{
 			StringBuilder sb = new StringBuilder ();
@@ -41,5 +41,5 @@ namespace SpirV
 
 			return sb.ToString ();
 		}
-    }
+	}
 }

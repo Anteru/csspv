@@ -29,7 +29,7 @@ namespace SpirV
 	}
 
 	public class Instruction
-    {
+	{
 		public string Name { get; }
 
 		public IList<Operand> Operands
@@ -47,5 +47,5 @@ namespace SpirV
 			Operands = operands;
 			Name = name;
 		}
-    }
+	}
 }

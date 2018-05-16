@@ -33,6 +33,19 @@ namespace SpirV
 				return (T)((IValueEnumOperandValue)Value).Value.First();
 			}
 		}
+
+		public T GetBitEnumValue<T> () where T : System.Enum
+		{
+			var v = Value as IBitEnumOperandValue;
+
+			uint result = 0;
+			foreach (var k in v.Values.Keys)
+			{
+				result |= k;
+			}
+
+			return (T)(object)result;
+		}
 	}
 
 	public class VaryingOperandValue
@@ -101,7 +114,7 @@ namespace SpirV
 		}
 	}
 
-	public class BitEnumOperandValue<T> : IEnumOperandValue where T : System.Enum
+	public class BitEnumOperandValue<T> : IBitEnumOperandValue where T : System.Enum
 	{
 		public IReadOnlyDictionary<uint, List<object>> Values { get; }
 		public System.Type EnumerationType { get { return typeof(T); } }
@@ -132,7 +145,76 @@ namespace SpirV
 
 	public class ModuleObject
 	{
+		public string Name { get; set; }
+	}
 
+	public class Label : ModuleObject
+	{
+		public uint Id { get; }
+
+		public Label (ParsedInstruction instruction)
+		{
+			Id = (instruction.Operands[0].Value as ObjectReference).Id;
+		}
+	}
+
+	public class Function : ModuleObject
+	{
+		public uint Id { get; }
+		public FunctionControl FunctionControl { get; }
+		public Type FunctionType { get; }
+
+		public Function (ParsedInstruction instruction, IReadOnlyDictionary<uint, ModuleObject> objects)
+		{
+			Id = (instruction.Operands[1].Value as ObjectReference).Id;
+			FunctionControl = instruction.Operands[2].GetBitEnumValue<FunctionControl> ();
+			FunctionType = objects[(instruction.Operands[3].Value as ObjectReference).Id] as FunctionType;
+		}
+	}
+
+	public class Variable : ModuleObject
+	{
+		public StorageClass StorageClass { get; }
+		public Type Type { get; }
+		public uint Id { get; }
+
+		public Variable (ParsedInstruction instruction)
+		{
+			Type = instruction.ResultType;
+			Id = (instruction.Operands[1].Value as ObjectReference).Id;
+			StorageClass = instruction.Operands[2].GetSingleEnumValue<StorageClass>();
+
+			// Parse initializer
+		}
+	}
+
+	public class EntryPoint : ModuleObject
+	{
+		public ExecutionModel ExecutionModel { get; }
+		public uint Id { get; }
+
+		public List<ObjectReference> Interface { get; } = new List<ObjectReference>();
+
+		public EntryPoint (ParsedInstruction instruction)
+		{
+			ExecutionModel = instruction.Operands[0].GetSingleEnumValue<ExecutionModel> ();
+			Id = (instruction.Operands[1].Value as ObjectReference).Id;
+			Name = (string)instruction.Operands[2].Value;
+
+			var interfaceItems = instruction.Operands[3].Value as VaryingOperandValue;
+			foreach (var op in interfaceItems.Values)
+			{
+				Interface.Add(op as ObjectReference);
+			}
+		}
+
+		public void Resolve (IReadOnlyDictionary<uint, ModuleObject> objects)
+		{
+			foreach (var o in Interface)
+			{
+				o.Resolve(objects);
+			}
+		}
 	}
 
 	public class ObjectReference
