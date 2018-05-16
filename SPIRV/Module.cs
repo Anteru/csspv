@@ -31,7 +31,7 @@ namespace SpirV
 
 		public static bool IsDebugInstruction (ParsedInstruction instruction)
 		{
-			return debugInstructions_.Contains(instruction.Instruction.Name);
+			return debugInstructions_.Contains (instruction.Instruction.Name);
 		}
 
 		private static void Read (IList<ParsedInstruction> instructions,
@@ -40,22 +40,20 @@ namespace SpirV
 			// Debug instructions can be only processed after everything
 			// else has been parsed, as they may reference types which haven't
 			// been seen in the file yet
-			var debugInstructions = new List<ParsedInstruction>();
+			var debugInstructions = new List<ParsedInstruction> ();
 
 			// Entry points contain forward references
 			// Those need to be resolved afterwards
-			var entryPoints = new List<ParsedInstruction>();
+			var entryPoints = new List<ParsedInstruction> ();
 
 			foreach (var instruction in instructions) {
-				if (IsDebugInstruction (instruction))
-				{
-					debugInstructions.Add(instruction);
+				if (IsDebugInstruction (instruction)) {
+					debugInstructions.Add (instruction);
 					continue;
 				}
 
-				if (instruction.Instruction is OpEntryPoint)
-				{
-					entryPoints.Add(instruction);
+				if (instruction.Instruction is OpEntryPoint) {
+					entryPoints.Add (instruction);
 					continue;
 				}
 
@@ -65,58 +63,61 @@ namespace SpirV
 
 				instruction.ResolveResultType (objects);
 
-				// Constants require that the result type has been resolved
-				if (instruction.Instruction is OpConstant) {
-					var t = instruction.ResultType;
-					System.Diagnostics.Debug.Assert (t != null);
-					System.Diagnostics.Debug.Assert (t is ScalarType);
+				switch (instruction.Instruction) {
+					// Constants require that the result type has been resolved
+					case OpConstant oc: {
+							var t = instruction.ResultType;
+							System.Diagnostics.Debug.Assert (t != null);
+							System.Diagnostics.Debug.Assert (t is ScalarType);
 
-					instruction.Operands [2].Value = ConvertConstant (
-						instruction.ResultType as ScalarType,
-						instruction.Words.Skip (3).ToList ());
-				} else if (instruction.Instruction is OpVariable)
-				{
-					var variable = new Variable(instruction);
-					objects[variable.Id] = variable;
-				} else if (instruction.Instruction is OpLabel)
-				{
-					var label = new Label(instruction);
-					objects[label.Id] = label;
-				} else if (instruction.Instruction is OpFunction)
-				{
-					var function = new Function(instruction, objects);
-					objects[function.Id] = function;
+							instruction.Operands[2].Value = ConvertConstant (
+								instruction.ResultType as ScalarType,
+								instruction.Words.Skip (3).ToList ());
+							break;
+						}
+					case OpVariable ov: {
+							var variable = new Variable (instruction);
+							objects[variable.Id] = variable;
+
+							break;
+						}
+					case OpLabel ol: {
+							var label = new Label (instruction);
+							objects[label.Id] = label;
+
+							break;
+						}
+					case OpFunction of: {
+							var function = new Function (instruction, objects);
+							objects[function.Id] = function;
+
+							break;
+						}
 				}
 			}
 
-			foreach (var instruction in entryPoints)
-			{
-				var entryPoint = new EntryPoint(instruction);
+			foreach (var instruction in entryPoints) {
+				var entryPoint = new EntryPoint (instruction);
 				objects[entryPoint.Id] = entryPoint;
 
-				entryPoint.Resolve(objects);
+				entryPoint.Resolve (objects);
 			}
 
-			foreach (var instruction in debugInstructions)
-			{
-				switch (instruction.Instruction)
-				{
-					case OpMemberName mn:
-						{
+			foreach (var instruction in debugInstructions) {
+				switch (instruction.Instruction) {
+					case OpMemberName mn: {
 							var t = objects[instruction.Words[1]] as StructType;
 
-							System.Diagnostics.Debug.Assert(t != null);
+							System.Diagnostics.Debug.Assert (t != null);
 
 							///TODO This should use proper accessors eventually
-							t.SetMemberName((uint)instruction.Operands[1].Value,
+							t.SetMemberName ((uint)instruction.Operands[1].Value,
 								instruction.Operands[2].Value as string);
 							break;
 						}
-					case OpName n:
-						{
+					case OpName n: {
 							// We skip naming objects we don't know about
-							if (! objects.ContainsKey (instruction.Words [1]))
-							{
+							if (!objects.ContainsKey (instruction.Words[1])) {
 								///TODO Fix this
 								continue;
 							}
@@ -147,7 +148,7 @@ namespace SpirV
 			string generatorName = null;
 
 			if (SpirV.Meta.Tools.ContainsKey (generatorToolId)) {
-				var toolInfo = SpirV.Meta.Tools [generatorToolId];
+				var toolInfo = SpirV.Meta.Tools[generatorToolId];
 
 				generatorVendor = toolInfo.Vendor;
 
@@ -200,62 +201,62 @@ namespace SpirV
 		{
 			switch (i.Instruction) {
 				case OpTypeInt t: {
-						objects [i.Words [1]] = new IntegerType (
-							(int)i.Words [2],
-							i.Words [3] == 1u);
+						objects[i.Words[1]] = new IntegerType (
+							(int)i.Words[2],
+							i.Words[3] == 1u);
 					}
 					break;
 				case OpTypeFloat t: {
-						objects [i.Words [1]] = new FloatingPointType (
-							(int)i.Words [2]);
+						objects[i.Words[1]] = new FloatingPointType (
+							(int)i.Words[2]);
 					}
 					break;
 				case OpTypeVector t: {
-						objects [i.Words [1]] = new VectorType (
-							objects [i.Words [2]] as ScalarType,
-							(int)i.Words [3]);
+						objects[i.Words[1]] = new VectorType (
+							objects[i.Words[2]] as ScalarType,
+							(int)i.Words[3]);
 					}
 					break;
 				case OpTypeMatrix t: {
-						objects [i.Words [1]] = new MatrixType (
-							objects [i.Words [2]] as VectorType,
-							(int)i.Words [3]);
+						objects[i.Words[1]] = new MatrixType (
+							objects[i.Words[2]] as VectorType,
+							(int)i.Words[3]);
 					}
 					break;
 				case OpTypeArray t: {
-						objects [i.Words [1]] = new ArrayType (
-							objects [i.Words [2]] as Type,
-							(int)i.Words [3]);
+						objects[i.Words[1]] = new ArrayType (
+							objects[i.Words[2]] as Type,
+							(int)i.Words[3]);
 					}
 					break;
 				case OpTypeRuntimeArray t: {
-						objects [i.Words [1]] = new RuntimeArrayType (
-							objects [i.Words [2]] as Type);
+						objects[i.Words[1]] = new RuntimeArrayType (
+							objects[i.Words[2]] as Type);
 					}
 					break;
 				case OpTypeBool t: {
-						objects [i.Words [1]] = new BoolType ();
+						objects[i.Words[1]] = new BoolType ();
 					}
 					break;
 				case OpTypeOpaque t: {
-						objects [i.Words [1]] = new OpaqueType ();
+						objects[i.Words[1]] = new OpaqueType ();
 					}
 					break;
 				case OpTypeVoid t: {
-						objects [i.Words [1]] = new VoidType ();
+						objects[i.Words[1]] = new VoidType ();
 					}
 					break;
 				case OpTypeImage t: {
-						var sampledType = objects [((ObjectReference)i.Operands[1].Value).Id] as Type;
+						var sampledType = objects[((ObjectReference)i.Operands[1].Value).Id] as Type;
 						var dim = i.Operands[2].GetSingleEnumValue<Dim> ();
-						var depth = (uint)i.Operands [3].Value;
-						var isArray = (uint)i.Operands [4].Value != 0;
-						var isMultiSampled = (uint)i.Operands [5].Value != 0;
-						var sampled = (uint)i.Operands [6].Value;
+						var depth = (uint)i.Operands[3].Value;
+						var isArray = (uint)i.Operands[4].Value != 0;
+						var isMultiSampled = (uint)i.Operands[5].Value != 0;
+						var sampled = (uint)i.Operands[6].Value;
 
-						var imageFormat = i.Operands [7].GetSingleEnumValue<ImageFormat> ();
+						var imageFormat = i.Operands[7].GetSingleEnumValue<ImageFormat> ();
 
-						objects [i.Words [1]] = new ImageType (sampledType,
+						objects[i.Words[1]] = new ImageType (sampledType,
 							dim,
 							(int)depth, isArray, isMultiSampled,
 							(int)sampled, imageFormat,
@@ -264,40 +265,40 @@ namespace SpirV
 					}
 					break;
 				case OpTypeSampledImage t: {
-						objects [i.Words [1]] = new SampledImageType (
-							objects [i.Words [2]] as ImageType
+						objects[i.Words[1]] = new SampledImageType (
+							objects[i.Words[2]] as ImageType
 						);
 					}
 					break;
 				case OpTypeFunction t: {
 						var parameterTypes = new List<Type> ();
 						for (int j = 3; j < i.Words.Count; ++j) {
-							parameterTypes.Add (objects [i.Words [j]] as Type);
+							parameterTypes.Add (objects[i.Words[j]] as Type);
 						}
-						objects [i.Words [1]] = new FunctionType (objects [i.Words [2]] as Type,
+						objects[i.Words[1]] = new FunctionType (objects[i.Words[2]] as Type,
 							parameterTypes);
 					}
 					break;
 				case OpTypeForwardPointer t: {
 						// We create a normal pointer, but with unspecified type
 						// This will get resolved later on
-						objects [i.Words [1]] = new PointerType ((StorageClass)i.Words [2]);
+						objects[i.Words[1]] = new PointerType ((StorageClass)i.Words[2]);
 					}
 					break;
 				case OpTypePointer t: {
-						if (objects.ContainsKey (i.Words [1])) {
+						if (objects.ContainsKey (i.Words[1])) {
 							// If there is something present, it must have been
 							// a forward reference. The storage type must
 							// match
-							var pt = objects [i.Words [1]] as PointerType;
+							var pt = objects[i.Words[1]] as PointerType;
 							Debug.Assert (pt != null);
-							Debug.Assert (pt.StorageClass == (StorageClass)i.Words [2]);
+							Debug.Assert (pt.StorageClass == (StorageClass)i.Words[2]);
 
-							pt.ResolveForwardReference (objects [i.Words [3]] as Type);
+							pt.ResolveForwardReference (objects[i.Words[3]] as Type);
 						} else {
-							objects [i.Words [1]] = new PointerType (
-								(StorageClass)i.Words [2],
-								objects [i.Words [3]] as Type
+							objects[i.Words[1]] = new PointerType (
+								(StorageClass)i.Words[2],
+								objects[i.Words[3]] as Type
 								);
 						}
 					}
@@ -305,10 +306,10 @@ namespace SpirV
 				case OpTypeStruct t: {
 						var memberTypes = new List<Type> ();
 						for (int j = 2; j < i.Words.Count; ++j) {
-							memberTypes.Add (objects [i.Words [j]] as Type);
+							memberTypes.Add (objects[i.Words[j]] as Type);
 						}
 
-						objects [i.Words [1]] = new StructType (memberTypes);
+						objects[i.Words[1]] = new StructType (memberTypes);
 					}
 					break;
 			}
@@ -317,10 +318,10 @@ namespace SpirV
 		private static object ConvertConstant (ScalarType type,
 			IReadOnlyList<uint> words)
 		{
-			byte [] bytes = new byte [words.Count * 4];
+			byte[] bytes = new byte[words.Count * 4];
 
 			for (int i = 0; i < words.Count; ++i) {
-				BitConverter.GetBytes (words [i]).CopyTo (bytes, i * 4);
+				BitConverter.GetBytes (words[i]).CopyTo (bytes, i * 4);
 			}
 
 			switch (type) {
@@ -335,9 +336,9 @@ namespace SpirV
 							}
 						} else {
 							if (i.Width == 16) {
-								return (ushort)words [0];
+								return (ushort)words[0];
 							} else if (i.Width == 32) {
-								return words [0];
+								return words[0];
 							} else if (i.Width == 64) {
 								return BitConverter.ToUInt64 (bytes, 0);
 							}

@@ -165,12 +165,18 @@ namespace SpirV
         AllowRecip = 8,
         Fast = 16,
     }
+    public class FPFastMathModeParameterFactory : ParameterFactory
+    {
+    }
     [Flags]
     public enum SelectionControl : uint
     {
         None = 0,
         Flatten = 1,
         DontFlatten = 2,
+    }
+    public class SelectionControlParameterFactory : ParameterFactory
+    {
     }
     [Flags]
     public enum LoopControl : uint
@@ -217,6 +223,9 @@ namespace SpirV
         Pure = 4,
         Const = 8,
     }
+    public class FunctionControlParameterFactory : ParameterFactory
+    {
+    }
     [Flags]
     public enum MemorySemantics : uint
     {
@@ -232,6 +241,9 @@ namespace SpirV
         CrossWorkgroupMemory = 512,
         AtomicCounterMemory = 1024,
         ImageMemory = 2048,
+    }
+    public class MemorySemanticsParameterFactory : ParameterFactory
+    {
     }
     [Flags]
     public enum MemoryAccess : uint
@@ -274,6 +286,9 @@ namespace SpirV
         None = 0,
         CmdExecTime = 1,
     }
+    public class KernelProfilingInfoParameterFactory : ParameterFactory
+    {
+    }
     public enum SourceLanguage : uint
     {
         Unknown = 0,
@@ -282,6 +297,9 @@ namespace SpirV
         OpenCL_C = 3,
         OpenCL_CPP = 4,
         HLSL = 5,
+    }
+    public class SourceLanguageParameterFactory : ParameterFactory
+    {
     }
     public enum ExecutionModel : uint
     {
@@ -293,17 +311,26 @@ namespace SpirV
         GLCompute = 5,
         Kernel = 6,
     }
+    public class ExecutionModelParameterFactory : ParameterFactory
+    {
+    }
     public enum AddressingModel : uint
     {
         Logical = 0,
         Physical32 = 1,
         Physical64 = 2,
     }
+    public class AddressingModelParameterFactory : ParameterFactory
+    {
+    }
     public enum MemoryModel : uint
     {
         Simple = 0,
         GLSL450 = 1,
         OpenCL = 2,
+    }
+    public class MemoryModelParameterFactory : ParameterFactory
+    {
     }
     public enum ExecutionMode : uint
     {
@@ -535,6 +562,9 @@ namespace SpirV
         Image = 11,
         StorageBuffer = 12,
     }
+    public class StorageClassParameterFactory : ParameterFactory
+    {
+    }
     public enum Dim : uint
     {
         Dim1D = 0,
@@ -545,6 +575,9 @@ namespace SpirV
         Buffer = 5,
         SubpassData = 6,
     }
+    public class DimParameterFactory : ParameterFactory
+    {
+    }
     public enum SamplerAddressingMode : uint
     {
         None = 0,
@@ -553,10 +586,16 @@ namespace SpirV
         Repeat = 3,
         RepeatMirrored = 4,
     }
+    public class SamplerAddressingModeParameterFactory : ParameterFactory
+    {
+    }
     public enum SamplerFilterMode : uint
     {
         Nearest = 0,
         Linear = 1,
+    }
+    public class SamplerFilterModeParameterFactory : ParameterFactory
+    {
     }
     public enum ImageFormat : uint
     {
@@ -601,6 +640,9 @@ namespace SpirV
         R16ui = 38,
         R8ui = 39,
     }
+    public class ImageFormatParameterFactory : ParameterFactory
+    {
+    }
     public enum ImageChannelOrder : uint
     {
         R = 0,
@@ -624,6 +666,9 @@ namespace SpirV
         sBGRA = 18,
         ABGR = 19,
     }
+    public class ImageChannelOrderParameterFactory : ParameterFactory
+    {
+    }
     public enum ImageChannelDataType : uint
     {
         SnormInt8 = 0,
@@ -644,6 +689,9 @@ namespace SpirV
         UnormInt24 = 15,
         UnormInt101010_2 = 16,
     }
+    public class ImageChannelDataTypeParameterFactory : ParameterFactory
+    {
+    }
     public enum FPRoundingMode : uint
     {
         RTE = 0,
@@ -651,16 +699,25 @@ namespace SpirV
         RTP = 2,
         RTN = 3,
     }
+    public class FPRoundingModeParameterFactory : ParameterFactory
+    {
+    }
     public enum LinkageType : uint
     {
         Export = 0,
         Import = 1,
+    }
+    public class LinkageTypeParameterFactory : ParameterFactory
+    {
     }
     public enum AccessQualifier : uint
     {
         ReadOnly = 0,
         WriteOnly = 1,
         ReadWrite = 2,
+    }
+    public class AccessQualifierParameterFactory : ParameterFactory
+    {
     }
     public enum FunctionParameterAttribute : uint
     {
@@ -672,6 +729,9 @@ namespace SpirV
         NoCapture = 5,
         NoWrite = 6,
         NoReadWrite = 7,
+    }
+    public class FunctionParameterAttributeParameterFactory : ParameterFactory
+    {
     }
     public enum Decoration : uint
     {
@@ -1173,6 +1233,9 @@ namespace SpirV
         PositionPerViewNV = 5261,
         ViewportMaskPerViewNV = 5262,
     }
+    public class BuiltInParameterFactory : ParameterFactory
+    {
+    }
     public enum Scope : uint
     {
         CrossDevice = 0,
@@ -1181,17 +1244,26 @@ namespace SpirV
         Subgroup = 3,
         Invocation = 4,
     }
+    public class ScopeParameterFactory : ParameterFactory
+    {
+    }
     public enum GroupOperation : uint
     {
         Reduce = 0,
         InclusiveScan = 1,
         ExclusiveScan = 2,
     }
+    public class GroupOperationParameterFactory : ParameterFactory
+    {
+    }
     public enum KernelEnqueueFlags : uint
     {
         NoWait = 0,
         WaitKernel = 1,
         WaitWorkGroup = 2,
+    }
+    public class KernelEnqueueFlagsParameterFactory : ParameterFactory
+    {
     }
     public enum Capability : uint
     {
@@ -1284,6 +1356,9 @@ namespace SpirV
         SubgroupBufferBlockIOINTEL = 5569,
         SubgroupImageBlockIOINTEL = 5570,
     }
+    public class CapabilityParameterFactory : ParameterFactory
+    {
+    }
     public class OpNop : Instruction
     {
         public OpNop() : base("OpNop")
@@ -1307,7 +1382,7 @@ namespace SpirV
     public class OpSource : Instruction
     {
         public OpSource() : base("OpSource", new List<Operand>()
-    {new Operand(new EnumType<SourceLanguage>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Version", OperandQuantifier.Default), new Operand(new IdRef(), "File", OperandQuantifier.Optional), new Operand(new LiteralString(), "Source", OperandQuantifier.Optional), })
+    {new Operand(new EnumType<SourceLanguage, SourceLanguageParameterFactory>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Version", OperandQuantifier.Default), new Operand(new IdRef(), "File", OperandQuantifier.Optional), new Operand(new LiteralString(), "Source", OperandQuantifier.Optional), })
         {
         }
     }
@@ -1370,14 +1445,14 @@ namespace SpirV
     public class OpMemoryModel : Instruction
     {
         public OpMemoryModel() : base("OpMemoryModel", new List<Operand>()
-    {new Operand(new EnumType<AddressingModel>(), null, OperandQuantifier.Default), new Operand(new EnumType<MemoryModel>(), null, OperandQuantifier.Default), })
+    {new Operand(new EnumType<AddressingModel, AddressingModelParameterFactory>(), null, OperandQuantifier.Default), new Operand(new EnumType<MemoryModel, MemoryModelParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
     public class OpEntryPoint : Instruction
     {
         public OpEntryPoint() : base("OpEntryPoint", new List<Operand>()
-    {new Operand(new EnumType<ExecutionModel>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new LiteralString(), "Name", OperandQuantifier.Default), new Operand(new IdRef(), "Interface", OperandQuantifier.Varying), })
+    {new Operand(new EnumType<ExecutionModel, ExecutionModelParameterFactory>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Entry Point", OperandQuantifier.Default), new Operand(new LiteralString(), "Name", OperandQuantifier.Default), new Operand(new IdRef(), "Interface", OperandQuantifier.Varying), })
         {
         }
     }
@@ -1391,7 +1466,7 @@ namespace SpirV
     public class OpCapability : Instruction
     {
         public OpCapability() : base("OpCapability", new List<Operand>()
-    {new Operand(new EnumType<Capability>(), "Capability", OperandQuantifier.Default), })
+    {new Operand(new EnumType<Capability, CapabilityParameterFactory>(), "Capability", OperandQuantifier.Default), })
         {
         }
     }
@@ -1440,7 +1515,7 @@ namespace SpirV
     public class OpTypeImage : Instruction
     {
         public OpTypeImage() : base("OpTypeImage", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Type", OperandQuantifier.Default), new Operand(new EnumType<Dim>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Depth", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Arrayed", OperandQuantifier.Default), new Operand(new LiteralInteger(), "MS", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Sampled", OperandQuantifier.Default), new Operand(new EnumType<ImageFormat>(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier>(), null, OperandQuantifier.Optional), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Sampled Type", OperandQuantifier.Default), new Operand(new EnumType<Dim, DimParameterFactory>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Depth", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Arrayed", OperandQuantifier.Default), new Operand(new LiteralInteger(), "MS", OperandQuantifier.Default), new Operand(new LiteralInteger(), "Sampled", OperandQuantifier.Default), new Operand(new EnumType<ImageFormat, ImageFormatParameterFactory>(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier, AccessQualifierParameterFactory>(), null, OperandQuantifier.Optional), })
         {
         }
     }
@@ -1489,7 +1564,7 @@ namespace SpirV
     public class OpTypePointer : Instruction
     {
         public OpTypePointer() : base("OpTypePointer", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Type", OperandQuantifier.Default), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass, StorageClassParameterFactory>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Type", OperandQuantifier.Default), })
         {
         }
     }
@@ -1531,14 +1606,14 @@ namespace SpirV
     public class OpTypePipe : Instruction
     {
         public OpTypePipe() : base("OpTypePipe", new List<Operand>()
-    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier>(), "Qualifier", OperandQuantifier.Default), })
+    {new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<AccessQualifier, AccessQualifierParameterFactory>(), "Qualifier", OperandQuantifier.Default), })
         {
         }
     }
     public class OpTypeForwardPointer : Instruction
     {
         public OpTypeForwardPointer() : base("OpTypeForwardPointer", new List<Operand>()
-    {new Operand(new IdRef(), "Pointer Type", OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Pointer Type", OperandQuantifier.Default), new Operand(new EnumType<StorageClass, StorageClassParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -1573,7 +1648,7 @@ namespace SpirV
     public class OpConstantSampler : Instruction
     {
         public OpConstantSampler() : base("OpConstantSampler", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<SamplerAddressingMode>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Param", OperandQuantifier.Default), new Operand(new EnumType<SamplerFilterMode>(), null, OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<SamplerAddressingMode, SamplerAddressingModeParameterFactory>(), null, OperandQuantifier.Default), new Operand(new LiteralInteger(), "Param", OperandQuantifier.Default), new Operand(new EnumType<SamplerFilterMode, SamplerFilterModeParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -1622,7 +1697,7 @@ namespace SpirV
     public class OpFunction : Instruction
     {
         public OpFunction() : base("OpFunction", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<FunctionControl>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Function Type", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<FunctionControl, FunctionControlParameterFactory>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Function Type", OperandQuantifier.Default), })
         {
         }
     }
@@ -1649,7 +1724,7 @@ namespace SpirV
     public class OpVariable : Instruction
     {
         public OpVariable() : base("OpVariable", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Initializer", OperandQuantifier.Optional), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new EnumType<StorageClass, StorageClassParameterFactory>(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Initializer", OperandQuantifier.Optional), })
         {
         }
     }
@@ -2076,7 +2151,7 @@ namespace SpirV
     public class OpGenericCastToPtrExplicit : Instruction
     {
         public OpGenericCastToPtrExplicit() : base("OpGenericCastToPtrExplicit", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new EnumType<StorageClass>(), "Storage", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdRef(), "Pointer", OperandQuantifier.Default), new Operand(new EnumType<StorageClass, StorageClassParameterFactory>(), "Storage", OperandQuantifier.Default), })
         {
         }
     }
@@ -2858,7 +2933,7 @@ namespace SpirV
     public class OpSelectionMerge : Instruction
     {
         public OpSelectionMerge() : base("OpSelectionMerge", new List<Operand>()
-    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new EnumType<SelectionControl>(), null, OperandQuantifier.Default), })
+    {new Operand(new IdRef(), "Merge Block", OperandQuantifier.Default), new Operand(new EnumType<SelectionControl, SelectionControlParameterFactory>(), null, OperandQuantifier.Default), })
         {
         }
     }
@@ -2967,56 +3042,56 @@ namespace SpirV
     public class OpGroupIAdd : Instruction
     {
         public OpGroupIAdd() : base("OpGroupIAdd", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFAdd : Instruction
     {
         public OpGroupFAdd() : base("OpGroupFAdd", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMin : Instruction
     {
         public OpGroupFMin() : base("OpGroupFMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMin : Instruction
     {
         public OpGroupUMin() : base("OpGroupUMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMin : Instruction
     {
         public OpGroupSMin() : base("OpGroupSMin", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMax : Instruction
     {
         public OpGroupFMax() : base("OpGroupFMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMax : Instruction
     {
         public OpGroupUMax() : base("OpGroupUMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMax : Instruction
     {
         public OpGroupSMax() : base("OpGroupSMax", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
@@ -3463,56 +3538,56 @@ namespace SpirV
     public class OpGroupIAddNonUniformAMD : Instruction
     {
         public OpGroupIAddNonUniformAMD() : base("OpGroupIAddNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFAddNonUniformAMD : Instruction
     {
         public OpGroupFAddNonUniformAMD() : base("OpGroupFAddNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMinNonUniformAMD : Instruction
     {
         public OpGroupFMinNonUniformAMD() : base("OpGroupFMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMinNonUniformAMD : Instruction
     {
         public OpGroupUMinNonUniformAMD() : base("OpGroupUMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMinNonUniformAMD : Instruction
     {
         public OpGroupSMinNonUniformAMD() : base("OpGroupSMinNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupFMaxNonUniformAMD : Instruction
     {
         public OpGroupFMaxNonUniformAMD() : base("OpGroupFMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupUMaxNonUniformAMD : Instruction
     {
         public OpGroupUMaxNonUniformAMD() : base("OpGroupUMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
     public class OpGroupSMaxNonUniformAMD : Instruction
     {
         public OpGroupSMaxNonUniformAMD() : base("OpGroupSMaxNonUniformAMD", new List<Operand>()
-    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
+    {new Operand(new IdResultType(), null, OperandQuantifier.Default), new Operand(new IdResult(), null, OperandQuantifier.Default), new Operand(new IdScope(), "Execution", OperandQuantifier.Default), new Operand(new EnumType<GroupOperation, GroupOperationParameterFactory>(), "Operation", OperandQuantifier.Default), new Operand(new IdRef(), "X", OperandQuantifier.Default), })
         {
         }
     }
