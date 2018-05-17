@@ -26,7 +26,7 @@ namespace SpirV
 			if (v.Value.Count == 0) {
 				// If there's no value at all, the enum is probably something
 				// like ImageFormat. In which case we just return the enum value
-				return (T)(object)v.Enumerand;
+				return (T)(object)v.Key;
 			} else {
 				// This means the enum has a value attached to it, so we return
 				// the attached value
@@ -79,7 +79,7 @@ namespace SpirV
 
 	public interface IValueEnumOperandValue : IEnumOperandValue
 	{
-		uint Enumerand { get; }
+		object Key { get; }
 		List<object> Value { get; }
 	}
 
@@ -87,7 +87,7 @@ namespace SpirV
 	{
 		public System.Type EnumerationType { get { return typeof(T); } }
 
-		public uint Enumerand { get { return (uint)(object)key_; } }
+		public object Key { get { return key_; } }
 		public List<object> Value { get; }
 
 		private readonly T key_ = default;
@@ -96,19 +96,6 @@ namespace SpirV
 		{
 			key_ = key;
 			Value = value;
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			sb.Append(key_);
-			if (Value is IList<object> valueList && valueList.Count > 0) {
-				sb.Append (" ");
-				sb.AppendJoin (" ", valueList.Select (x => ParsedInstruction.OperandValueToString (x)));
-			}
-
-			return sb.ToString();
 		}
 	}
 
@@ -120,24 +107,6 @@ namespace SpirV
 		public BitEnumOperandValue (Dictionary<uint, List<object>> values)
 		{
 			Values = values;
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder ();
-
-			foreach (var key in Values.Keys) {
-				sb.Append (EnumerationType.GetEnumName (key));
-
-				var value = Values[key] as IList<object>;
-
-				if (value.Count != 0) {
-					sb.Append (" ");
-					sb.AppendJoin (" ", value.Select (x => ParsedInstruction.OperandValueToString (x)));
-				}
-			}
-
-			return sb.ToString ();
 		}
 	}
 
@@ -226,22 +195,6 @@ namespace SpirV
 			}
 		}
 
-		public static string OperandValueToString (object value)
-		{
-			if (value is System.Type t) {
-				return t.Name;
-			} else if (value is string s) {
-				return $"\"{s}\"";
-			} else {
-				return value.ToString ();
-			}
-		}
-
-		private static void AppendValue (StringBuilder sb, object value)
-		{
-			sb.Append (OperandValueToString (value));
-		}
-
 		public Type ResultType { get; set; }
 		public uint ResultId { get
 			{
@@ -271,45 +224,6 @@ namespace SpirV
 					objectReference.Resolve (objects);
 				}
 			}
-		}
-
-		public override string ToString ()
-		{
-			if (Operands.Count == 0) {
-				return Instruction.Name;
-			}
-
-			var sb = new StringBuilder ();
-
-			int currentOperand = 0;
-			if (Instruction.Operands [currentOperand].Type is IdResultType) {
-				sb.Append (ResultType.ToString ());
-				sb.Append (" ");
-
-				++currentOperand;
-			}
-
-			if (currentOperand < Operands.Count &&
-				Instruction.Operands [currentOperand].Type is IdResult) {
-				if (string.IsNullOrWhiteSpace (Name)) {
-					AppendValue (sb, Operands[currentOperand].Value);
-				} else {
-					sb.Append (Name);
-				}
-				sb.Append (" = ");
-
-				++currentOperand;
-			}
-
-			sb.Append (Instruction.Name);
-			sb.Append (" ");
-
-			for (;currentOperand < Operands.Count; ++currentOperand) {
-				AppendValue (sb, Operands [currentOperand].Value);
-				sb.Append (" ");
-			}
-
-			return sb.ToString ();
 		}
 	}
 }
