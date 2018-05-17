@@ -124,11 +124,45 @@ namespace SpirV
 		public int SampleCount { get; }
 		public ImageFormat Format { get; }
 		public AccessQualifier AccessQualifier { get; }
+
+		public override string ToString ()
+		{
+			var sb = new StringBuilder ();
+			switch (AccessQualifier) {
+				case AccessQualifier.ReadWrite:
+					sb.Append ("read_write "); break;
+				case AccessQualifier.WriteOnly:
+					sb.Append ("write_only "); break;
+				case AccessQualifier.ReadOnly:
+					sb.Append ("read_only "); break;
+			}
+
+			sb.Append ("Texture");
+			switch (Dim) {
+				case Dim.Dim1D: sb.Append ("1D"); break;
+				case Dim.Dim2D: sb.Append ("2D"); break;
+				case Dim.Dim3D: sb.Append ("3D"); break;
+				case Dim.Cube: sb.Append ("Cube"); break;
+			}
+
+			if (IsMultisampled) {
+				sb.Append ("MS");
+			}
+
+			if (IsArray) {
+				sb.Append ("Array");
+			}
+
+			return sb.ToString ();
+		}
 	}
 
 	public class SamplerType : Type
 	{
-
+		public override string ToString ()
+		{
+			return "sampler";
+		}
 	}
 
 	public class SampledImageType : Type
@@ -142,7 +176,7 @@ namespace SpirV
 
 		public override string ToString ()
 		{
-			return $"SampledImage{ImageType.Dim} {ImageType.SampledType}";
+			return $"{ImageType}Sampled";
 		}
 	}
 
@@ -260,7 +294,7 @@ namespace SpirV
 		public Type ReturnType { get; }
 		public IReadOnlyList<Type> ParameterTypes { get { return parameterTypes_; } }
 
-		private List<Type> parameterTypes_ = new List<Type> ();
+		private readonly List<Type> parameterTypes_ = new List<Type> ();
 
 		public FunctionType (Type returnType, List<Type> parameterTypes)
 		{

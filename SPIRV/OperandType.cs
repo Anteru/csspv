@@ -13,6 +13,7 @@ namespace SpirV
 		{
 			value = this.GetType ();
 			wordsUsed = 1;
+
 			return true;
 		}
 	}
@@ -80,7 +81,13 @@ namespace SpirV
 
 	public class LiteralExtInstInteger : Literal
 	{
+		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
+		{
+			value = words[0];
+			wordsUsed = 1;
 
+			return true;
+		}
 	}
 
 	public class LiteralSpecConstantOpInteger : Literal

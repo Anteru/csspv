@@ -69,14 +69,17 @@ namespace SpirV
 
 				switch (instruction.Instruction) {
 					// Constants require that the result type has been resolved
+					case OpSpecConstant sc:
 					case OpConstant oc: {
 							var t = instruction.ResultType;
 							System.Diagnostics.Debug.Assert (t != null);
 							System.Diagnostics.Debug.Assert (t is ScalarType);
-														
-							instruction.Value = ConvertConstant (
+							
+							var constant = ConvertConstant (
 								instruction.ResultType as ScalarType,
 								instruction.Words.Skip (3).ToList ());
+							instruction.Operands[2].Value = constant;
+							instruction.Value = constant;
 							
 							break;
 						}
