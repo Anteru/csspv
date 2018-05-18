@@ -11,7 +11,8 @@ namespace SpirV
 		public virtual bool ReadValue (IList<uint> words, 
 			out object value, out int wordsUsed)
 		{
-			value = this.GetType ();
+			// This returns the dynamic type
+			value = GetType ();
 			wordsUsed = 1;
 
 			return true;
@@ -76,7 +77,7 @@ namespace SpirV
 
 	public class LiteralContextDependentNumber : Literal
 	{
-
+		// This is handled during parsing by ConvertConstant
 	}
 
 	public class LiteralExtInstInteger : Literal
@@ -108,7 +109,7 @@ namespace SpirV
 
 	public class Parameter
 	{
-		public virtual IList<OperandType> OperandTypes { get; }
+		public virtual IReadOnlyList<OperandType> OperandTypes { get; }
 	}
 
 	public class ParameterFactory
@@ -121,7 +122,7 @@ namespace SpirV
 	public class EnumType<T, U> : OperandType where T : System.Enum where U : ParameterFactory, new ()
 	{
 		private U parameterFactory_ = new U();
-		public virtual System.Type EnumerationType { get { return typeof(T); } }
+		public System.Type EnumerationType { get { return typeof(T); } }
 
 		public override bool ReadValue (IList<uint> words, out object value, out int wordsUsed)
 		{

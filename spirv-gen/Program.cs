@@ -68,21 +68,19 @@ namespace SpvGen
 				public String Name {get;} 
 				public String Vendor {get;} 
 			}");
-			sb.Append ("private static Dictionary<int, ToolInfo> toolInfos_ = new Dictionary<int, ToolInfo> {");
+			sb.Append ("private readonly static Dictionary<int, ToolInfo> toolInfos_ = new Dictionary<int, ToolInfo> {");
 
 			foreach (var kv in toolInfos_) {
 				if (kv.Value.name == null) {
-					sb.AppendFormat ("{{ {0}, new ToolInfo (\"{1}\") }},",
-						kv.Key, kv.Value.vendor);
+					sb.Append ($"{{ {kv.Key}, new ToolInfo (\"{kv.Value.vendor}\") }},");
 				} else {
 
-					sb.AppendFormat ("{{ {0}, new ToolInfo (\"{1}\", \"{2}\") }},",
-						kv.Key, kv.Value.vendor, kv.Value.name);
+					sb.Append ($"{{ {kv.Key}, new ToolInfo (\"{kv.Value.vendor}\", \"{kv.Value.name}\") }},");
 				}
 			}
 
 			sb.Append ("};\n");
-			sb.Append ("public static IReadOnlyDictionary<int, ToolInfo> Tools {get {return toolInfos_;}}\n");
+			sb.Append ("public static IReadOnlyDictionary<int, ToolInfo> Tools {get => toolInfos_;}\n");
 
 			var tree = CSharpSyntaxTree.ParseText (sb.ToString ());
 			foreach (var node in tree.GetRoot ().ChildNodes ()) {
@@ -205,7 +203,7 @@ namespace SpvGen
 			}
 
 			sb.AppendLine ("public static class Instructions {");
-			sb.Append ("private static Dictionary<int, Instruction> instructions_ = new Dictionary<int, Instruction> {");
+			sb.Append ("private static readonly Dictionary<int, Instruction> instructions_ = new Dictionary<int, Instruction> {");
 
 			foreach (var instruction in ins) {
 				sb.AppendLine ($"{{ {instruction.Id}, new {instruction.Name}() }},");
@@ -213,7 +211,7 @@ namespace SpvGen
 
 			sb.Append (@"};
 
-			public static IReadOnlyDictionary<int, Instruction> OpcodeToInstruction { get { return instructions_; } }
+			public static IReadOnlyDictionary<int, Instruction> OpcodeToInstruction { get => instructions_; }
 			}");
 
 			var s = sb.ToString ();
@@ -338,7 +336,7 @@ namespace SpvGen
 				sb.AppendLine ($"public enum {kind} : uint");
 				sb.AppendLine ("{");
 				foreach (var e in enumerants) {
-					sb.AppendFormat ("{0} = {1},\n", e.Name, e.Value);
+					sb.Append ($"{e.Name} = {e.Value},\n");
 				}
 				sb.AppendLine ("}");
 
@@ -348,8 +346,8 @@ namespace SpvGen
 					if (e.Parameters == null) continue;
 					sb.AppendLine ($"public class {e.Name}Parameter : Parameter");
 					sb.AppendLine ("{");
-					sb.AppendLine ("public override IList<OperandType> OperandTypes { get { return OperandTypes_; } }");
-					sb.AppendLine ("private static IList<OperandType> OperandTypes_ = new List<OperandType> () {");
+					sb.AppendLine ("public override IReadOnlyList<OperandType> OperandTypes { get => operandTypes_; }");
+					sb.AppendLine ("private static readonly List<OperandType> operandTypes_ = new List<OperandType> () {");
 
 					foreach (var p in e.Parameters) {
 						if (result.ContainsKey (p)) {

@@ -93,17 +93,12 @@ namespace SpirV
 
 							System.Diagnostics.Debug.Assert (t != null);
 
-							///TODO This should use proper accessors eventually
 							t.SetMemberName ((uint)instruction.Operands[1].Value,
 								instruction.Operands[2].Value as string);
 							break;
 						}
 					case OpName n: {
 							// We skip naming objects we don't know about
-							if (!objects.ContainsKey (instruction.Words[1])) {
-								///TODO Fix this
-								continue;
-							}
 							var t = objects[instruction.Words[1]];
 
 							t.Name = instruction.Operands[1].Value as string;
@@ -214,11 +209,14 @@ namespace SpirV
 						var constant = objects[i.Words[3]].Value;
 						int size = 0;
 
-						if (constant is UInt32) {
-							size = (int)(uint)(constant);
-						} else if (constant is Int32) {
-							size = (int)constant;
-						} ///TODO handle more constants
+						switch (constant) {
+							case UInt16 u16: size = u16; break;
+							case UInt32 u32: size = (int)u32; break;
+							case UInt64 u64: size = (int)u64; break;
+							case Int16 i16: size = i16; break;
+							case Int32 i32: size = i32; break;
+							case Int64 i64: size = (int)i64; break;
+						}
 
 						i.ResultType = new ArrayType (
 							objects[i.Words[2]].ResultType,
@@ -243,7 +241,7 @@ namespace SpirV
 					}
 					break;
 				case OpTypeImage t: {
-						var sampledType = objects[((ObjectReference)i.Operands[1].Value).Id].ResultType;
+						var sampledType = objects[i.Operands[1].GetId ()].ResultType;
 						var dim = i.Operands[2].GetSingleEnumValue<Dim> ();
 						var depth = (uint)i.Operands[3].Value;
 						var isArray = (uint)i.Operands[4].Value != 0;

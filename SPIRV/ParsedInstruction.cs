@@ -34,6 +34,11 @@ namespace SpirV
 			}
 		}
 
+		public uint GetId ()
+		{
+			return (Value as ObjectReference).Id;
+		}
+
 		public T GetBitEnumValue<T> () where T : System.Enum
 		{
 			var v = Value as IBitEnumOperandValue;
@@ -200,7 +205,7 @@ namespace SpirV
 			{
 				for (int i = 0; i < Instruction.Operands.Count; ++i) {
 					if (Instruction.Operands[i].Type is IdResult) {
-						return (Operands[i].Value as ObjectReference).Id;
+						return Operands[i].GetId ();
 					}
 				}
 
