@@ -1,5 +1,5 @@
-C# SPV
-======
+C# SPIR-V disassembler
+======================
 
 Overview
 --------
@@ -15,14 +15,17 @@ System requirements
 
 This application is built for .NET Core 2.0 and should run on any platform supporting that.
 
+It requires C# 7.3 due to `System.Enum` constraints. Please make sure you're using the latest .NET Core SDK to have access to this feature.
+
 Features & limitations
 ----------------------
 
-* C# code generation from SPIR-V JSON files
-* Handles all known instructions
+* Generates C# code from SPIR-V JSON files
 * Pretty-prints names, types, etc.
 
-A couple of features are missing:
+Build
+-----
 
-* Not all types are implemented (or rather, the type is not instantiated from the corresponding ``OpType`` instruction)
-* Access to operands of instructions is not as nice as it should be.
+Build `spirv-dis`, this will in turn build `SPIRV` and the project will be ready to use.
+
+If you want to re-generate the generate files, build and run `spirv-gen`.
