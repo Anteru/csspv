@@ -64,7 +64,13 @@ namespace SpirV
 		{
 			var sb = new StringBuilder ();
 
-			sb.AppendJoin (" ", Values.Select(x => x.ToString ()));
+			for (int i = 0; i < Values.Count; ++i) {
+				sb.Append (Values[i]);
+
+				if (i < (Values.Count - 1)) {
+					sb.Append (" ");
+				}
+			}
 
 			return sb.ToString ();
 		}

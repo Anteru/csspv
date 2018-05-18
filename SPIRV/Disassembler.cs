@@ -63,7 +63,7 @@ namespace SpirV
 			}
 
 			foreach (var line in lines) {
-				if (line.StartsWith (';')) {
+				if (line.StartsWith (";")) {
 					sb.AppendLine (line);
 				} else {
 					if (line.Contains ('=')) {
