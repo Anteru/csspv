@@ -7,4 +7,4 @@ pipelines:
           - dotnetcore
         script:
           - dotnet restore
-          - dotnet build csspv
+          - dotnet build csspv.sln
