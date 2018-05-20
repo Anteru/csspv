@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Matthäus G. Chajdas</Authors>
+    <Product>CSSPV</Product>
+    <RepositoryUrl>https://bitbucket.org/Anteru/csspv/src/default/</RepositoryUrl>
+    <PackageProjectUrl>https://sh13.net/projects/csspv/</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>

@@ -142,12 +142,12 @@ namespace SpirV
 			// Read header
 			var header = new ModuleHeader
 			{
-				version = version,
-				generatorName = generatorName,
-				generatorVendor = generatorVendor,
-				generatorVersion = (int)(generatorMagicNumber & 0xFFFF),
-				bound = reader.ReadWord (),
-				reserved = reader.ReadWord ()
+				Version = version,
+				GeneratorName = generatorName,
+				GeneratorVendor = generatorVendor,
+				GeneratorVersion = (int)(generatorMagicNumber & 0xFFFF),
+				Bound = reader.ReadWord (),
+				Reserved = reader.ReadWord ()
 			};
 
 			var instructions = new List<ParsedInstruction> ();

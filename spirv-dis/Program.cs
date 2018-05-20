@@ -9,10 +9,10 @@ namespace SpirV
 		[Option('t', HelpText="Show types")]
 		public bool ShowTypes { get; set; } = false;
 
-		[Option ('n', HelpText = "Show object reference names if possible")]
+		[Option ('n', HelpText = "Show object names if possible")]
 		public bool ShowNames { get; set; } = false;
 
-		[Value(0, MetaName="Input")]
+		[Value(0, MetaName="Input", HelpText ="Binary SPIR-V file to disassemble", Required = true)]
 		public string InputFile { get; set; }
 	}
 

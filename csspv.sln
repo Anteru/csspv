@@ -5,12 +5,12 @@ VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpirV", "SPIRV\SpirV.csproj", "{B498C064-1566-4123-A828-BE35FBCF5F2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "spirv-dis", "spirv-dis\spirv-dis.csproj", "{F37E5152-3746-4E09-8E26-FE96EEA03DF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSPVDis", "spirv-dis\CSPVDis.csproj", "{F37E5152-3746-4E09-8E26-FE96EEA03DF0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B498C064-1566-4123-A828-BE35FBCF5F2C} = {B498C064-1566-4123-A828-BE35FBCF5F2C}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "spirv-gen", "spirv-gen\spirv-gen.csproj", "{400E239D-F4FD-4557-AD5E-15B34F81898D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSPVGen", "spirv-gen\CSPVGen.csproj", "{400E239D-F4FD-4557-AD5E-15B34F81898D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

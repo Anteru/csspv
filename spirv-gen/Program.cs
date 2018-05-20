@@ -7,17 +7,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace SpvGen
+namespace SpirV
 {
-	enum SpirvEnumType
+	enum EnumType
 	{
 		Value,
 		Bit
 	}
 
-	class SpirvMeta
+	class Meta
 	{
-		public SpirvMeta (Newtonsoft.Json.Linq.JToken meta,
+		public Meta (Newtonsoft.Json.Linq.JToken meta,
 			XmlElement ids)
 		{
 			MagicNumber = meta.Value<uint> ("MagicNumber");
@@ -300,7 +300,7 @@ namespace SpvGen
 				var kind = n.Value<string> ("kind");
 
 				var enumType = n.Value<string> ("category") == "ValueEnum"
-					? SpirvEnumType.Value : SpirvEnumType.Bit;
+					? EnumType.Value : EnumType.Bit;
 
 				IList<OperatorKindEnumerant> enumerants = new List<OperatorKindEnumerant> ();
 
@@ -330,7 +330,7 @@ namespace SpvGen
 
 				StringBuilder sb = new StringBuilder ();
 
-				if (enumType == SpirvEnumType.Bit) {
+				if (enumType == EnumType.Bit) {
 					sb.AppendLine ("[Flags]");
 				}
 				sb.AppendLine ($"public enum {kind} : uint");
@@ -465,7 +465,7 @@ namespace SpvGen
 		private static void CreateSpirvMeta (Newtonsoft.Json.Linq.JToken jr,
 			XmlDocument doc, SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
-			var meta = new SpirvMeta (jr["spv"]["meta"], doc.SelectSingleNode ("/registry/ids") as XmlElement);
+			var meta = new Meta (jr["spv"]["meta"], doc.SelectSingleNode ("/registry/ids") as XmlElement);
 
 			nodes.Add (meta.ToSourceFragment (generator));
 		}

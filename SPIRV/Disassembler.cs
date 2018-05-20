@@ -7,12 +7,12 @@ namespace SpirV
 {
 	public struct ModuleHeader
 	{
-		public Version version;
-		public string generatorVendor;
-		public string generatorName;
-		public int generatorVersion;
-		public uint bound;
-		public uint reserved;
+		public Version Version { get; set; }
+		public string GeneratorVendor { get; set; }
+		public string GeneratorName { get; set; }
+		public int GeneratorVersion { get; set; }
+		public uint Bound { get; set; }
+		public uint Reserved { get; set; }
 	}
 
 	[Flags]
@@ -36,19 +36,19 @@ namespace SpirV
 			StringBuilder sb = new StringBuilder ();
 
 			sb.AppendFormat ("; SPIR-V\n");
-			sb.AppendFormat ("; Version: {0}\n", module.Header.version);
-			if (module.Header.generatorName == null) {
+			sb.AppendFormat ("; Version: {0}\n", module.Header.Version);
+			if (module.Header.GeneratorName == null) {
 				sb.AppendFormat ("; Generator: {0}; {1}\n",
-					module.Header.generatorName,
-					module.Header.generatorVersion);
+					module.Header.GeneratorName,
+					module.Header.GeneratorVersion);
 			} else {
 				sb.AppendFormat ("; Generator: {0} {1}; {2}\n",
-					module.Header.generatorVendor,
-					module.Header.generatorName,
-					module.Header.generatorVersion);
+					module.Header.GeneratorVendor,
+					module.Header.GeneratorName,
+					module.Header.GeneratorVersion);
 			}
-			sb.AppendFormat ("; Bound: {0}\n", module.Header.bound);
-			sb.AppendFormat ("; Schema: {0}\n", module.Header.reserved);
+			sb.AppendFormat ("; Bound: {0}\n", module.Header.Bound);
+			sb.AppendFormat ("; Schema: {0}\n", module.Header.Reserved);
 
 			List<string> lines = new List<string> ();
 			foreach (var i in module.Instructions) {

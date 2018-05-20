@@ -6,9 +6,9 @@ Overview
 
 This project contains a re-implementation of the ``spirv-dis`` tool written in C#. It consists of three projects:
 
-* ``spirv-gen``, parses the SPIR-V JSON descriptions and produces C# code from there
-* ``spirv``, the core library providing the code model
-* ``spirv-dis``, the disassembler executable
+* ``CSPVGen``, parses the SPIR-V JSON descriptions and produces C# code from there
+* ``SpirV``, the core library providing the code model
+* ``CSPVDis``, the disassembler executable
 
 System requirements
 -------------------
@@ -26,6 +26,6 @@ Features & limitations
 Build
 -----
 
-Build `spirv-dis`, this will in turn build `SPIRV` and the project will be ready to use.
+Build `CSPVDis`, this will in turn build `SpirV` and the project will be ready to use.
 
-If you want to re-generate the generate files, build and run `spirv-gen`.
+If you want to re-generate the generate files, build and run `CSPVGen`.
