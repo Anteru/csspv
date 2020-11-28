@@ -8,10 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
-        dotnet: [ '3.1.x' ]
+        dotnet: [ '5.0.x' ]
     name: Build C# SPV with .NET ${{ matrix.dotnet }}
     steps:
       - uses: actions/checkout@v2
