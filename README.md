@@ -13,7 +13,7 @@ This project contains a re-implementation of the ``spirv-dis`` tool written in C
 System requirements
 -------------------
 
-This application is built for .NET Core 2.0 and should run on any platform supporting that.
+This application is built for .NET 5.0 and should run on any platform supporting that.
 
 It requires C# 7.3 due to `System.Enum` constraints. Please make sure you're using the latest .NET Core SDK to have access to this feature.
 

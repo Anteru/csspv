@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SpirV</RootNamespace>
     <AssemblyName>cspvgen</AssemblyName>
     <Authors>Matthäus G. Chajdas</Authors>
