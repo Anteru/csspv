@@ -17,14 +17,14 @@ namespace SpirV
 
 	class Meta
 	{
-		public Meta (Newtonsoft.Json.Linq.JToken meta,
+		public Meta (System.Text.Json.JsonElement meta,
 			XmlElement ids)
 		{
-			MagicNumber = meta.Value<uint> ("MagicNumber");
-			Version = meta.Value<uint> ("Version");
-			Revision = meta.Value<uint> ("Revision");
-			OpCodeMask = meta.Value<uint> ("OpCodeMask");
-			WordCountShift = meta.Value<uint> ("WordCountShift");
+			MagicNumber = meta.GetProperty ("MagicNumber").GetUInt32();
+			Version = meta.GetProperty("Version").GetUInt32();
+			Revision = meta.GetProperty("Revision").GetUInt32();
+			OpCodeMask = meta.GetProperty("OpCodeMask").GetUInt32();
+			WordCountShift = meta.GetProperty("WordCountShift").GetUInt32();
 
 			foreach (XmlElement toolId in ids.SelectNodes ("id")) {
 				var ti = new ToolInfo
@@ -98,7 +98,7 @@ namespace SpirV
 			return generator.PropertyDeclaration (name,
 				generator.TypeExpression (SpecialType.System_UInt32),
 				Accessibility.Public,
-				DeclarationModifiers.Static,
+				DeclarationModifiers.Static | DeclarationModifiers.ReadOnly,
 				getAccessorStatements: new SyntaxNode[] {
 					generator.ReturnStatement (
 						generator.LiteralExpression (value))
@@ -146,30 +146,29 @@ namespace SpirV
 			public IList<OperandItem> Operands;
 		}
 
-		private static void ProcessInstructions (Newtonsoft.Json.Linq.JToken instructions,
+		private static void ProcessInstructions (System.Text.Json.JsonElement instructions,
 			IReadOnlyDictionary<string, bool> knownEnumerands,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
 			var ins = new List<InstructionItem> ();
 
-			foreach (var instruction in instructions) {
+			foreach (var instruction in instructions.EnumerateArray()) {
 				var i = new InstructionItem ()
 				{
-					Name = instruction.Value<string> ("opname"),
-					Id = instruction.Value<int> ("opcode")
+					Name = instruction.GetProperty ("opname").GetString(),
+					Id = instruction.GetProperty("opcode").GetInt32()
 				};
 
-				if (instruction["operands"] != null) {
+				if (instruction.TryGetProperty("operands", out System.Text.Json.JsonElement operands)) {
 					i.Operands = new List<OperandItem> ();
-					foreach (var operand in instruction["operands"]) {
+					foreach (var operand in operands.EnumerateArray()) {
 						var oe = new OperandItem ()
 						{
-							Kind = operand.Value<string> ("kind")
+							Kind = operand.GetProperty ("kind").GetString()
 						};
 
-						if (operand["quantifier"] != null) {
-							var q = operand.Value<string> ("quantifier");
-							switch (q) {
+						if (operand.TryGetProperty("quantifier", out System.Text.Json.JsonElement quantifier)) {
+							switch (quantifier.GetString()) {
 								case "*": oe.Quantifier = "Varying"; break;
 								case "?": oe.Quantifier = "Optional"; break;
 							}
@@ -177,8 +176,8 @@ namespace SpirV
 							oe.Quantifier = "Default";
 						}
 
-						if (operand["name"] != null) {
-							var operandName = operand.Value<string> ("name");
+						if (operand.TryGetProperty("name", out System.Text.Json.JsonElement name)) {
+							var operandName = name.GetString();
 
 							if (operandName.StartsWith ('\'')) {
 								operandName = operandName.Replace ("\'", "");
@@ -263,65 +262,64 @@ namespace SpirV
 			public IList<string> Parameters;
 		}
 
-		private static IReadOnlyDictionary<string, bool> ProcessOperandTypes (Newtonsoft.Json.Linq.JToken OperandTypes,
+		private static IReadOnlyDictionary<string, bool> ProcessOperandTypes (System.Text.Json.JsonElement OperandTypes,
 			SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
 			var result = new Dictionary<string, bool> ();
 
 			// We gather all of the types up-front as we need them in the loop
-			foreach (var n in OperandTypes) {
+			foreach (var n in OperandTypes.EnumerateArray()) {
 				// We only handle the Enums here, the others are handled 
 				// manually
-				if (n.Value<string> ("category") != "ValueEnum"
-					&& n.Value<string> ("category") != "BitEnum") continue;
+				if (n.GetProperty ("category").GetString() != "ValueEnum"
+					&& n.GetProperty ("category").GetString() != "BitEnum") continue;
 
-				var kind = n.Value<string> ("kind");
+				var kind = n.GetProperty ("kind").GetString();
 
 				bool hasParameters = false;
 
-				foreach (var enumerant in n["enumerants"]) {
-					var parameters = enumerant["parameters"];
-
-					if (parameters != null) {
+				foreach (var enumerant in n.GetProperty("enumerants").EnumerateArray()) {
+					if (enumerant.TryGetProperty("parameters", out _))
+                    {
 						hasParameters = true;
 						break;
-					}
+                    }
 				}
 
 				result.Add (kind, hasParameters);
 			}
 
-			foreach (var n in OperandTypes) {
+			foreach (var n in OperandTypes.EnumerateArray()) {
 				// We only handle the Enums here, the others are handled 
 				// manually
-				if (n.Value<string> ("category") != "ValueEnum"
-					&& n.Value<string> ("category") != "BitEnum") continue;
+				if (n.GetProperty ("category").GetString() != "ValueEnum"
+					&& n.GetProperty("category").GetString() != "BitEnum") continue;
 
-				var kind = n.Value<string> ("kind");
+				var kind = n.GetProperty("kind").GetString();
 
-				var enumType = n.Value<string> ("category") == "ValueEnum"
+				var enumType = n.GetProperty("category").GetString() == "ValueEnum"
 					? EnumType.Value : EnumType.Bit;
 
 				IList<OperatorKindEnumerant> enumerants = new List<OperatorKindEnumerant> ();
 
-				foreach (var enumerant in n["enumerants"]) {
+				foreach (var enumerant in n.GetProperty("enumerants").EnumerateArray()) {
 					var oke = new OperatorKindEnumerant
 					{
-						Name = enumerant.Value<string> ("enumerant"),
-						Value = ParseEnumValue (enumerant["value"])
+						Name = enumerant.GetProperty ("enumerant").GetString(),
+						Value = ParseEnumValue (enumerant.GetProperty("value"))
 					};
 
 					if (Char.IsDigit (oke.Name[0])) {
 						oke.Name = kind + oke.Name;
 					}
 
-					var parameters = enumerant["parameters"];
+					if (enumerant.TryGetProperty("parameters", out System.Text.Json.JsonElement parameters)) {
 
-					if (parameters != null) {
-						oke.Parameters = new List<string> ();
+						oke.Parameters = new List<string>();
 
-						foreach (var parameter in parameters) {
-							oke.Parameters.Add (parameter.Value<string> ("kind"));
+						foreach (var parameter in parameters.EnumerateArray())
+						{
+							oke.Parameters.Add(parameter.GetProperty("kind").GetString());
 						}
 					}
 
@@ -396,18 +394,18 @@ namespace SpirV
 			sb.AppendLine ("}");
 		}
 
-		private static uint ParseEnumValue (Newtonsoft.Json.Linq.JToken value)
+		private static uint ParseEnumValue (System.Text.Json.JsonElement value)
 		{
-			if (value.Type == Newtonsoft.Json.Linq.JTokenType.String) {
+			if (value.ValueKind == System.Text.Json.JsonValueKind.String) {
 				var s = value.ToString ();
 
 				if (s.StartsWith ("0x")) {
-					return uint.Parse (s.Substring (2), System.Globalization.NumberStyles.HexNumber);
+					return uint.Parse (s[2..], System.Globalization.NumberStyles.HexNumber);
 				} else {
 					return uint.Parse (s);
 				}
 			} else {
-				return (uint)value;
+				return value.GetUInt32();
 			}
 		}
 
@@ -415,42 +413,40 @@ namespace SpirV
 			SyntaxGenerator generator,
 			Workspace workspace)
 		{
-			var doc = Newtonsoft.Json.Linq.JObject.ReadFrom (
-				new Newtonsoft.Json.JsonTextReader (System.IO.File.OpenText (
-					"spirv.core.grammar.json")));
+			var doc = System.Text.Json.JsonDocument.Parse(System.IO.File.ReadAllText(
+					"spirv.core.grammar.json"));
 
 			var nodes = new List<SyntaxNode> ();
 
-			var knownEnumerands = ProcessOperandTypes (doc["operand_kinds"], generator, nodes);
-			ProcessInstructions (doc["instructions"], knownEnumerands, generator, nodes);
+			var knownEnumerands = ProcessOperandTypes (doc.RootElement.GetProperty("operand_kinds"), generator, nodes);
+			ProcessInstructions (doc.RootElement.GetProperty("instructions"), knownEnumerands, generator, nodes);
 
 			var cu = generator.CompilationUnit (
 				generator.NamespaceImportDeclaration ("System"),
 				generator.NamespaceImportDeclaration ("System.Collections.Generic"),
 				generator.NamespaceDeclaration ("SpirV", nodes));
 
-			GenerateCode (cu, workspace, "../SPIRV/SpirV.Core.Grammar.cs");
+			GenerateCode (cu, workspace, "../../../../SPIRV/SpirV.Core.Grammar.cs");
 		}
 
 		private static void ProcessSpirv (SyntaxGenerator generator, Workspace workspace)
 		{
-			var doc = Newtonsoft.Json.Linq.JObject.ReadFrom (
-				new Newtonsoft.Json.JsonTextReader (System.IO.File.OpenText (
-					"spirv.json")));
+			var doc = System.Text.Json.JsonDocument.Parse (System.IO.File.ReadAllText (
+					"spirv.json"));
 
 			var xmlDoc = new XmlDocument ();
 			xmlDoc.Load ("spir-v.xml");
 
 			var nodes = new List<SyntaxNode> ();
 
-			CreateSpirvMeta (doc, xmlDoc, generator, nodes);
+			CreateSpirvMeta (doc.RootElement, xmlDoc, generator, nodes);
 
 			var cu = generator.CompilationUnit (
 				generator.NamespaceImportDeclaration ("System"),
 				generator.NamespaceImportDeclaration ("System.Collections.Generic"),
 				generator.NamespaceDeclaration ("SpirV", nodes));
 
-			GenerateCode (cu, workspace, "../SPIRV/SpirV.Meta.cs");
+			GenerateCode (cu, workspace, "../../../../SPIRV/SpirV.Meta.cs");
 		}
 
 		private static void GenerateCode (SyntaxNode node, Workspace workspace,
@@ -462,10 +458,10 @@ namespace SpirV
 				node.ToFullString ());
 		}
 
-		private static void CreateSpirvMeta (Newtonsoft.Json.Linq.JToken jr,
+		private static void CreateSpirvMeta (System.Text.Json.JsonElement jr,
 			XmlDocument doc, SyntaxGenerator generator, IList<SyntaxNode> nodes)
 		{
-			var meta = new Meta (jr["spv"]["meta"], doc.SelectSingleNode ("/registry/ids") as XmlElement);
+			var meta = new Meta (jr.GetProperty("spv").GetProperty("meta"), doc.SelectSingleNode ("/registry/ids") as XmlElement);
 
 			nodes.Add (meta.ToSourceFragment (generator));
 		}
